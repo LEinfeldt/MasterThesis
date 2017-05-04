@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -54,6 +57,8 @@ import com.skobbler.ngx.routing.SKRouteSettings;
 import org.json.*;
 
 import java.util.Map;
+
+import static android.R.attr.id;
 
 /**
  * Created by lasse on 27.04.2017.
@@ -204,31 +209,61 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         }
     }
 
+    /**
+     * @desc Load the data from JSON file and add the markers to the map
+     */
     private void addDataToMap() {
         //TODO: Add the other data sources as well (needs different images)
         if(mapView != null) {
+            //counter for unique id for each marker
             int i = 0;
+            //load the busstops
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getBusstopCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
                 annotation.setLocation(entry.getValue());
                 annotation.setAnnotationType(SKAnnotation.SK_ANNOTATION_TYPE_RED);
                 annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView =(RelativeLayout) ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_custom_view, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
             }
+            //add pharmacy
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getPharmacyCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
                 annotation.setLocation(entry.getValue());
                 annotation.setAnnotationType(SKAnnotation.SK_ANNOTATION_TYPE_BLUE);
                 annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView =(RelativeLayout) ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_custom_view, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
             }
+            //load supermarkets
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getSupermarketCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
                 annotation.setLocation(entry.getValue());
-                annotation.setAnnotationType(SKAnnotation.SK_ANNOTATION_TYPE_GREEN);
                 annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView =(RelativeLayout) ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_custom_view, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
             }
