@@ -32,7 +32,9 @@
         <activity android:name=".Activities.LaunchArActivity" />
         <activity android:name=".Activities.LaunchMapActivity" />
         <activity android:name=".Activities.LaunchPictureActivity" />
-        <activity android:name=".Activities.MapPictureActivity" />
+        <activity
+            android:name=".Activities.MapPictureActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".Activities.MapActivity" />
         <activity android:name=".Activities.ModeSelectionActivity"/>
         <activity android:name=".Activities.PermissionsActivity">

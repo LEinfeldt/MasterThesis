@@ -64,26 +64,15 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
 
     //Holder to hold the mapView.
     private SKMapViewHolder mapHolder;
-    //PositionMe Button
-    private ImageButton locateButtonPicture;
     //receiver to receive the output of Geocoding
     private AddressResultReceiver mResultReceiver;
-    //Edit Text widgets to edit the origin and destination addresses
-    private EditText originAddress;
-    private EditText destinationAddress;
     //resulted coordinates for the origin and destination points
     private SKCoordinate originPoint;
     private SKCoordinate destinationPoint;
     //Tag for printing Logs
     private static final String TAG = "MapPictureActivity";
-    //Progress bar during the time of addresses search
-    private ProgressBar progressBar;
-    //Button for calculateroute, start navigation and stop navigation
-    private Button startButton;
     //to determine if navigation is in process.
     private boolean navigationInProgress = false;
-    //Switch between MapView and Map+AR View
-    private Switch aSwitch;
     //Map View
     private SKMapSurfaceView mapView;
     //for showing the compass on the map view
@@ -108,16 +97,13 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mappicture);
         //Initializing Objects
         mapHolder = (SKMapViewHolder) findViewById(R.id.view_group_mapPicture);
         mapHolder.setMapSurfaceListener(this);
         //drawCircle();//TODO: this method can be used to draw the  upcoming geofence circle
         mResultReceiver = new AddressResultReceiver(null);
-        progressBar = (ProgressBar) findViewById(R.id.progressBarPicture);
-        destinationAddress = (EditText) findViewById(R.id.destinationPicture);
-        originAddress = (EditText) findViewById(R.id.originPicture);
-        startButton = (Button) findViewById(R.id.buttonPicture);
         mLocation = new LocationUpdate(this);
         sensorUpdate = new SensorUpdate(this);
         //registering the sensor update listener
@@ -133,46 +119,6 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        //Map/Map+Picture View Switch
-        aSwitch = (Switch) findViewById(R.id.switchPicture);
-        aSwitch.setChecked(true);
-        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked){
-                    //if the switch is checked geofences would be added
-                    geofencing.addGeofence();
-                    //TODO: This is for testing, remove this two lines in the final run
-                    Intent intent = new Intent(getApplicationContext(), DialogActivity.class);
-                    startActivity(intent);
-                }
-                else{
-                    geofencing.removeGeofence();
-                }
-
-            }
-        });
-
-        //Position Me Button
-        locateButtonPicture = (ImageButton) findViewById(R.id.locateButtonPicture);
-        locateButtonPicture.setOnClickListener(new View.OnClickListener() {
-                                           @Override
-                                           public void onClick(View v) {if(!headingOn){
-                                               //display compass
-                                               setHeading(true);
-                                           }
-                                               if (mapView != null && mLocation.currentPosition != null) {
-                                                   //centers the map on the current position
-                                                   mapView.centerOnCurrentPosition(17, true, 500);
-                                               } else {
-                                                   Toast.makeText(getApplicationContext(),
-                                                           getResources().getString(R.string.no_position_available), Toast.LENGTH_SHORT)
-                                                           .show();
-                                               }
-                                           }
-                                       }
-        );
     }
 
     private void setHeading(boolean enabled) {
@@ -189,41 +135,6 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
             //unregister the sensorupdate listener
             sensorUpdate.unregister();
         }
-    }
-
-    public void onButtonClicked(View view) {
-        //If the central button is clicked while the text reads calculate route
-        if(startButton.getText().equals(getResources().getString(R.string.calculate_route))) {
-
-            //Opens the Geocoding Intent Service
-            Intent intent = new Intent(this, FetchLocationIntentService.class);
-            //put the value of the result receiver from the constants class
-            intent.putExtra(Constants.RECEIVER, mResultReceiver);
-            //put the name of the destination
-            intent.putExtra(Constants.LOCATION_NAME_DATA_EXTRA, destinationAddress.getText().toString());
-            //puts the name of the origin point
-            intent.putExtra(Constants.LOCATION_NAME_DATA_ORIGIN, originAddress.getText().toString());
-            //progress bar to show the backprocess
-            progressBar.setVisibility(View.VISIBLE);
-            //starting the intent service
-            startService(intent);
-        }
-        else if(startButton.getText().equals(getResources().getString(R.string.start_navigation))){
-            //if the button reads start navigation: start navigation
-            startButton.setText(R.string.stop_navigation);
-            launchNavigation();
-        }
-
-        else{
-            //when the button reads stop navigation
-            startButton.setText(R.string.calculate_route);
-            //clear the cached route and annotations and stop navigation.
-            clearMap();
-            clearRouteFromCache();
-            mapView.deleteAllAnnotationsAndCustomPOIs();
-            stopNavigation();
-        }
-
     }
 
     private void launchNavigation() {
@@ -355,13 +266,13 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
 
     private void applysettings() {
         //apply different settings like panning, zooming, compass shown and scale shown to the map
-        mapView.getMapSettings().setMapRotationEnabled(true);
-        mapView.getMapSettings().setMapZoomingEnabled(true);
-        mapView.getMapSettings().setMapPanningEnabled(true);
-        mapView.getMapSettings().setZoomWithAnchorEnabled(true);
-        mapView.getMapSettings().setInertiaRotatingEnabled(true);
-        mapView.getMapSettings().setInertiaZoomingEnabled(true);
-        mapView.getMapSettings().setInertiaPanningEnabled(true);
+        mapView.getMapSettings().setMapRotationEnabled(false);
+        mapView.getMapSettings().setMapZoomingEnabled(false);
+        mapView.getMapSettings().setMapPanningEnabled(false);
+        mapView.getMapSettings().setZoomWithAnchorEnabled(false);
+        mapView.getMapSettings().setInertiaRotatingEnabled(false);
+        mapView.getMapSettings().setInertiaZoomingEnabled(false);
+        mapView.getMapSettings().setInertiaPanningEnabled(false);
         mapView.getMapSettings().setCompassPosition(new SKScreenPoint(10, 50));
         mapView.getMapSettings().setCompassShown(true);
         mapHolder.setScaleViewEnabled(true);
@@ -512,7 +423,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         SKRouteManager.getInstance().setCurrentRouteByUniqueId(skRouteInfo.getRouteID());
         // zoom to the current route
         SKRouteManager.getInstance().zoomToRoute(1, 1, 8, 8, 8, 8, 0);
-        startButton.setText(getResources().getString(R.string.start_navigation));
+        //startButton.setText(getResources().getString(R.string.start_navigation));
 
     }
 
@@ -661,7 +572,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
                 runOnUiThread(new Runnable() {
                                   @Override
                                   public void run() {
-                                      progressBar.setVisibility(View.GONE);
+                                      //progressBar.setVisibility(View.GONE);
 
                                       if (address != null && oAddress != null) {
                                           //assign values to the destination and origin coordinates
@@ -669,8 +580,8 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
                                           destinationPoint = new SKCoordinate(address.getLatitude(), address.getLongitude());
                                           originPoint = new SKCoordinate(oAddress.getLatitude(), oAddress.getLongitude());
                                           calculateRoute(originPoint, destinationPoint);
-                                          originAddress.getText().clear();
-                                          destinationAddress.getText().clear();
+                                          //originAddress.getText().clear();
+                                          //destinationAddress.getText().clear();
                                           Log.i(TAG, "here");
                                       }
                                   }
@@ -681,9 +592,9 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
                                   //In case it fails to geocode
                                   @Override
                                   public void run() {
-                                      progressBar.setVisibility(View.GONE);
-                                      originAddress.getText().clear();
-                                      destinationAddress.getText().clear();
+                                      //progressBar.setVisibility(View.GONE);
+                                      //originAddress.getText().clear();
+                                      //destinationAddress.getText().clear();
                                       Toast.makeText(getApplicationContext(), getResources().getString(R.string.geocode_failure),
                                               Toast.LENGTH_LONG).show();
                                   }
