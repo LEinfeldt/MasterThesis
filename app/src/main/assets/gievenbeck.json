@@ -1,0 +1,742 @@
+{
+    "supermarketsGievenbeck": [
+        {
+            "name": "Lidl",
+            "lat": "51.9667441",
+            "lng": "7.5791139"
+        },
+        {
+            "name": "Rewe1",
+            "lat": "51.96703",
+            "lng": "7.58109"
+        },
+        {
+            "name": "Rewe",
+            "lat": "51.97318",
+            "lng": "7.56466"
+        },
+        {
+            "name": "Aldi",
+            "lat": "51.96672",
+            "lng": "7.56374"
+        },
+        {
+            "name": "Marktkauf",
+            "lat": "51.95782",
+            "lng": "7.57038"
+        },
+        {
+            "name": "Foreign",
+            "lat": "51.96708",
+            "lng": "7.57959"
+        },
+        {
+            "name": "Other",
+            "lat": "51.96068",
+            "lng": "7.60490"
+        }
+    ],
+
+    "pharmacyGievenbeck": [
+        {
+            "lat": "51.96705",
+            "lng": "7.57919",
+            "name": "Annette Apotheke"
+        },
+        {
+            "lat": "51.96750",
+            "lng": "7.57835",
+            "name": "Gievenbecker Markt-Apotheke"
+        },
+        {
+            "lat": "51.97312",
+            "lng": "7.56401",
+            "name": "Rüschhauswegapotheke"
+        },
+        {
+            "lat": "51.96649",
+            "lng": "7.56417",
+            "name": "Apotheke im Auenviertel"
+        },
+        {
+            "lat": "51.95855",
+            "lng": "7.57041",
+            "name": "Apotheke im Ärztehaus"
+        },
+        {
+            "lat": "51.96011",
+            "lng": "7.59200",
+            "name": "UKM Apotheke"
+        }
+    ],
+
+    "healthCenters": [
+        {
+            "lat": "51.95869",
+            "lng": "7.57049"
+        },
+        {
+            "lat": "51.97154",
+            "lng": "7.56326"
+        },
+        {
+            "lat": "51.97032",
+            "lng": "7.56712"
+        },
+        {
+            "lat": "51.97334",
+            "lng": "7.56375"
+        },
+        {
+            "lat": "51.96458",
+            "lng": "7.57469"
+        },
+        {
+            "lat": "51.97149",
+            "lng": "7.57180"
+        },
+        {
+            "lat": "51.97478",
+            "lng": "7.57055"
+        },
+        {
+            "lat": "51.96752",
+            "lng": "7.57831"
+        },
+        {
+            "lat": "51.96690",
+            "lng": "7.57888"
+        },
+        {
+            "lat": "51.96776",
+            "lng": "7.57896"
+        },
+        {
+            "lat": "51.96949",
+            "lng": "7.57968"
+        },
+        {
+            "lat": "51.97742",
+            "lng": "7.56967"
+        },
+        {
+            "lat": "51.97678",
+            "lng": "7.57144"
+        },
+        {
+            "lat": "51.96673",
+            "lng": "7.58184"
+        },
+        {
+            "lat": "51.96483",
+            "lng": "7.58484"
+        },
+        {
+            "lat": "51.96385",
+            "lng": "7.58693"
+        },
+        {
+            "lat": "51.96111",
+            "lng": "7.59598"
+        },
+        {
+            "lat": "51.95882",
+            "lng": "7.58801"
+        },
+        {
+            "lat": "51.95770",
+            "lng": "7.58766"
+        },
+        {
+            "lat": "51.95608",
+            "lng": "7.59489"
+        },
+        {
+            "lat": "51.95211",
+            "lng": "7.59286"
+        },
+        {
+            "lat": "51.95970",
+            "lng": "7.60121"
+        },
+        {
+            "lat": "51.95973",
+            "lng": "7.60336"
+        },
+        {
+            "lat": "51.95809",
+            "lng": "7.60304"
+        },
+        {
+            "lat": "51.96660",
+            "lng": "7.59129"
+        }
+    ],
+
+    "busstops": [
+        {
+            "name": "Jungeblodtplatz",
+            "lat": "51.96022",
+            "lng": "7.60422"
+        },
+        {
+            "name": "Franz-Hitze-Haus",
+            "lat": "51.95656",
+            "lng": "7.60271"
+        },
+        {
+            "name": "Franz-Hitze-Haus2",
+            "lat": "51.95578",
+            "lng": "7.60286"
+        },
+        {
+            "name": "Zoo/LWL-Naturkundemuseum",
+            "lat": "51.94955",
+            "lng": "7.58976"
+        },
+        {
+            "name": "Mühlenhof",
+            "lat": "51.95216",
+            "lng": "7.59485"
+        },
+        {
+            "name": "Mühlenhof2",
+            "lat": "51.95292",
+            "lng": "7.59611"
+        },
+        {
+            "name": "Redigerstraße",
+            "lat": "51.95452",
+            "lng": "7.59203"
+        },
+        {
+            "name": "Mausbachstraße",
+            "lat": "51.95565",
+            "lng": "7.59336"
+        },
+        {
+            "name": "Sentruper Höhe",
+            "lat": "51.95677",
+            "lng": "7.59402"
+        },
+        {
+            "name": "Schlüterstraße",
+            "lat": "51.95793",
+            "lng": "7.59621"
+        },
+        {
+            "name": "Chirugie",
+            "lat": "51.95909",
+            "lng": "7.60004"
+        },
+        {
+            "name": "Domagkstraße",
+            "lat": "51.96085",
+            "lng": "7.60254"
+        },
+        {
+            "name": "Domagkstraße2",
+            "lat": "51.96140",
+            "lng": "7.60233"
+        },
+        {
+            "name": "P+R Coesfelder Kreuz",
+            "lat": "51.96411",
+            "lng": "7.60160"
+        },
+        {
+            "name": "P+R Coesfelder Kreuz2",
+            "lat": "51.96494",
+            "lng": "7.60091"
+        },
+        {
+            "name": "P+R Coesfelder Kreuz3",
+            "lat": "51.96500",
+            "lng": "7.60017"
+        },
+        {
+            "name": "Lukas Kirche",
+            "lat": "51.96346",
+            "lng": "7.59739"
+        },
+        {
+            "name": "Universitätsklinikum",
+            "lat": "51.96177",
+            "lng": "7.59443"
+        },
+        {
+            "name": "Universitätsklinikum2",
+            "lat": "51.96132",
+            "lng": "7.59310"
+        },
+        {
+            "name": "Schmeddingstraße",
+            "lat": "51.96113",
+            "lng": "7.58992"
+        },
+        {
+            "name": "Schmeddingstraße2",
+            "lat": "51.96075",
+            "lng": "7.58947"
+        },
+        {
+            "name": "Deipenfohr",
+            "lat": "51.96050",
+            "lng": "7.58162"
+        },
+        {
+            "name": "Deipenfohr2",
+            "lat": "51.96047",
+            "lng": "7.58073"
+        },
+        {
+            "name": "Gievenbeck Kaserne",
+            "lat": "51.95899",
+            "lng": "7.57607"
+        },
+        {
+            "name": "Diekmannstraße",
+            "lat": "51.95788",
+            "lng": "7.57354"
+        },
+        {
+            "name": "Diekmannstraße2",
+            "lat": "51.95747",
+            "lng": "7.57328"
+        },
+        {
+            "name": "Diekmannstraße3",
+            "lat": "51.95804",
+            "lng": "7.57179"
+        },
+        {
+            "name": "Diekmannstraße4",
+            "lat": "51.95735",
+            "lng": "7.57197"
+        },
+        {
+            "name": "Ramertsweg",
+            "lat": "51.95574",
+            "lng": "7.56771"
+        },
+        {
+            "name": "Ackermann",
+            "lat": "51.95272",
+            "lng": "7.55186"
+        },
+        {
+            "name": "Wilhelm-Klemm Straße",
+            "lat": "51.96655",
+            "lng": "7.59749"
+        },
+        {
+            "name": "Mendelstraße",
+            "lat": "51.96932",
+            "lng": "7.59644"
+        },
+        {
+            "name": "Corrensstraße",
+            "lat": "51.96910",
+            "lng": "7.59658"
+        },
+        {
+            "name": "Corrensstraße2",
+            "lat": "51.97091",
+            "lng": "7.59708"
+        },
+        {
+            "name": "Corrensstraße3",
+            "lat": "51.97118",
+            "lng": "7.59702"
+        },
+        {
+            "name": "Rudolf-Harbig Weg",
+            "lat": "51.97167",
+            "lng": "7.59497"
+        },
+        {
+            "name": "Horstmarer Landweg",
+            "lat": "51.97337",
+            "lng": "7.59092"
+        },
+        {
+            "name": "Wasserweg",
+            "lat": "51.97479",
+            "lng": "7.59212"
+        },
+        {
+            "name": "Alte Sternwarte",
+            "lat": "51.97599",
+            "lng": "7.58552"
+        },
+        {
+            "name": "Alte Sternwarte2",
+            "lat": "51.97630",
+            "lng": "7.58534"
+        },
+        {
+            "name": "Am Breilbusch",
+            "lat": "51.97556",
+            "lng": "7.57435"
+        },
+        {
+            "name": "Gescherweg",
+            "lat": "51.97285",
+            "lng": "7.57594"
+        },
+        {
+            "name": "Gescherweg2",
+            "lat": "51.97253",
+            "lng": "7.57526"
+        },
+        {
+            "name": "Twenteweg",
+            "lat": "51.97349",
+            "lng": "7.57262"
+        },
+        {
+            "name": " Twenteweg2",
+            "lat": "51.97397",
+            "lng": "7.57144"
+        },
+        {
+            "name": "Toppheide",
+            "lat": "51.97509",
+            "lng": "7.57049"
+        },
+        {
+            "name": "Toppheide2",
+            "lat": "51.97533",
+            "lng": "7.56988"
+        },
+        {
+            "name": "Rüschhausweg",
+            "lat": "51.97390",
+            "lng": "7.56517"
+        },
+        {
+            "name": "Rüschhausweg2",
+            "lat": "51.97266",
+            "lng": "7.56552"
+        },
+        {
+            "name": "Südlohnweg",
+            "lat": "51.97622",
+            "lng": "7.56130"
+        },
+        {
+            "name": "Schreiberstraße",
+            "lat": "51.96497",
+            "lng": "7.59551"
+        },
+        {
+            "name": "Hautklinik",
+            "lat": "51.96527",
+            "lng": "7.59104"
+        },
+        {
+            "name": "Potstiege",
+            "lat": "51.96569",
+            "lng": "7.58281"
+        },
+        {
+            "name": "St. Michael Kirche",
+            "lat": "51.96745",
+            "lng": "7.57984"
+        },
+        {
+            "name": "St. Michael Kirche2",
+            "lat": "51.96820",
+            "lng": "7.57881"
+        },
+        {
+            "name": "Besselweg",
+            "lat": "51.97021",
+            "lng": "7.57762"
+        },
+        {
+            "name": "Gescherweg3",
+            "lat": "51.97147",
+            "lng": "7.57665"
+        },
+        {
+            "name": "Ahausweg",
+            "lat": "51.96889",
+            "lng": "7.57332"
+        },
+        {
+            "name": "Asbeckweg",
+            "lat": "51.97127",
+            "lng": "7.56978"
+        },
+        {
+            "name": "Asbeckweg2",
+            "lat": "51.97140",
+            "lng": "7.56915"
+        },
+        {
+            "name": "Weitkampweg",
+            "lat": "51.97313",
+            "lng": "7.56054"
+        },
+        {
+            "name": "Haus Mariengrund",
+            "lat": "51.97093",
+            "lng": "7.56081"
+        },
+        {
+            "name": "Nünningfeld",
+            "lat": "51.96965",
+            "lng": "7.56252"
+        },
+        {
+            "name": "Gronowski Straße",
+            "lat": "51.96785",
+            "lng": "7.56264"
+        },
+        {
+            "name": "Gronowski Straße2",
+            "lat": "51.96770",
+            "lng": "7.56298"
+        },
+        {
+            "name": "Auenviertel",
+            "lat": "51.96602",
+            "lng": "7.56525"
+        },
+        {
+            "name": "Auenviertel2",
+            "lat": "51.96554",
+            "lng": "7.56573"
+        },
+        {
+            "name": "Freiherr-vom-Stein-Gymnasium",
+            "lat": "51.96164",
+            "lng": "7.56713"
+        },
+        {
+            "name": "Freiherr-vom-Stein-Gymnasium2",
+            "lat": "51.96103",
+            "lng": "7.56815"
+        },
+        {
+            "name": "Gartenbreie",
+            "lat": "51.95976",
+            "lng": "7.56945"
+        },
+        {
+            "name": "Gartenbreie2",
+            "lat": "51.95896",
+            "lng": "7.57069"
+        }
+    ],
+
+    "sportFacilities": [
+        {
+            "lat": "51.96375",
+            "lng": "7.56776"
+        },
+        {
+            "lat": "51.96405",
+            "lng": "7.56839"
+        },
+        {
+            "lat": "51.96454",
+            "lng": "7.56886"
+        },
+        {
+            "lat": "51.96575",
+            "lng": "7.57264"
+        },
+        {
+            "lat": "51.97564",
+            "lng": "7.57245"
+        },
+        {
+            "lat": "51.97250",
+            "lng": "7.58100" 
+        },
+        {
+            "lat": "51.97141",
+            "lng": "7.59937"
+        },
+        {
+            "lat": "51.95438",
+            "lng": "7.59981"
+        },
+        {
+            "lat": "51.97107",
+            "lng": "7.58227"
+        }
+    ],
+
+    "parks": [
+        {
+            "lat": "51.96218",
+            "lng": "7.56419"
+        },
+        {
+            "lat": "51.96501",
+            "lng": "7.56920"
+        },
+        {
+            "lat": "51.97618",
+            "lng": "7.57120"
+        },
+        {
+            "lat": "51.95024",
+            "lng": "7.59238"
+        },
+        {
+            "lat": "51.96347",
+            "lng": "7.59898"
+        }
+    ],
+
+    "schools": [
+        {
+            "name": "Städtische Kindertagesstätte",
+            "lat": "51.97680",
+            "lng": "7.56808"
+        },
+        {
+            "name": "Kita Outlaw",
+            "lat": "51.97620",
+            "lng": "7.57347"
+        },
+        {
+            "name": "Städtische Kindertagesstätte und Familienzentrum",
+            "lat": "51.97463",
+            "lng": "7.56921"
+        },
+        {
+            "name": "Wartburg Grundschule",
+            "lat": "51.97441",
+            "lng": "7.56723"
+        },
+        {
+            "name": "Städtische Kindertagesstätte Gievenbeck",
+            "lat": "51.97228",
+            "lng": "7.55971"
+        },
+        {
+            "name": "Kindertagesstätte St. Michael 2",
+            "lat": "51.96756",
+            "lng": "7.56152"
+        },
+        {
+            "name": "Hugo-de-Grootschool",
+            "lat": "51.96824",
+            "lng": "7.56300"
+        },
+        {
+            "name": "Kita Lichtblick",
+            "lat": "51.96639",
+            "lng": "7.56683"
+        },
+        {
+            "name": "Mosaik Schule",
+            "lat": "51.96522",
+            "lng": "7.56678"
+        },
+        {
+            "name": "Freiherr vom Stein Gymnasium",
+            "lat": "51.96134",
+            "lng": "7.56864"
+        },
+        {
+            "name": "DRK Kita Wolkenburg",
+            "lat": "51.95891",
+            "lng": "7.56688"
+        },
+        {
+            "name": "DRK Kita Oxford",
+            "lat": "51.95886",
+            "lng": "7.57498"
+        },
+        {
+            "name": "Katholische Kita St. Michael",
+            "lat": "51.96816",
+            "lng": "7.58030"
+        },
+        {
+            "name": "Michaelschule",
+            "lat": "51.96781",
+            "lng": "7.58095"
+        },
+        {
+            "name": "Freie Waldorfschule Münster",
+            "lat": "51.96923",
+            "lng": "7.58127"
+        },
+        {
+            "name": "Waldorfkindergarten",
+            "lat": "51.97013",
+            "lng": "7.58182"
+        },
+        {
+            "name": "Helen Keller Schule",
+            "lat": "51.95890",
+            "lng": "7.59212"
+        },
+        {
+            "name": "Kita Niki de Saint Phalle",
+            "lat": "51.95955",
+            "lng": "7.58967"
+        },
+        {
+            "name": "Kindergarten St. Theresia",
+            "lat": "51.95756",
+            "lng": "7.59445"
+        },
+        {
+            "name": "Theresienschule",
+            "lat": "51.95512",
+            "lng": "7.59457"
+        },
+        {
+            "name": "Timmermeister Schule",
+            "lat": "51.95382",
+            "lng": "7.59962"
+        },
+        {
+            "name": "Kita Tausendfüssler",
+            "lat": "51.95754",
+            "lng": "7.60227"
+        },
+        {
+            "name": "Lukas Kita",
+            "lat": "51.96730",
+            "lng": "7.57739"
+        }
+    ],
+
+    "libraries": [
+        {
+            "name": "Bücherei St. Michael",
+            "lat": "51.96779",
+            "lng": "7.57942"
+        }
+    ],
+
+    "language": [
+        {
+            "lat": "51.96520",
+            "lng": "7.59763"
+        }
+    ],
+
+    "administration": [
+        {
+            "lat": "51.96749",
+            "lng": "7.57780"
+        }
+    ],
+
+    "insurance": [
+        {
+            "lat": "51.96526",
+            "lng": "7.60008"
+        }
+    ]
+}

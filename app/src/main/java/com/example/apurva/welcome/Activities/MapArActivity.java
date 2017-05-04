@@ -2,20 +2,22 @@ package com.example.apurva.welcome.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
@@ -23,18 +25,17 @@ import com.example.apurva.welcome.DecisionPoints.JsonParser;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
 import com.example.apurva.welcome.Geocoding.Constants;
+import com.example.apurva.welcome.Geocoding.FetchLocationIntentService;
 import com.example.apurva.welcome.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
 import com.skobbler.ngx.map.SKAnimationSettings;
 import com.skobbler.ngx.map.SKAnnotation;
-import com.skobbler.ngx.map.SKAnnotationView;
 import com.skobbler.ngx.map.SKCircle;
 import com.skobbler.ngx.map.SKCoordinateRegion;
 import com.skobbler.ngx.map.SKMapCustomPOI;
 import com.skobbler.ngx.map.SKMapPOI;
 import com.skobbler.ngx.map.SKMapSettings;
-import com.skobbler.ngx.SKMaps;
 import com.skobbler.ngx.map.SKMapSurfaceListener;
 import com.skobbler.ngx.map.SKMapSurfaceView;
 import com.skobbler.ngx.map.SKMapViewHolder;
@@ -51,27 +52,39 @@ import com.skobbler.ngx.routing.SKRouteListener;
 import com.skobbler.ngx.routing.SKRouteManager;
 import com.skobbler.ngx.routing.SKRouteSettings;
 
-import org.json.*;
+import org.json.JSONException;
 
 import java.util.Map;
 
-/**
- * Created by lasse on 27.04.2017.
- */
 
-public class MapActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
+/*
+This activity is responsible for the search of destination, route calculation and navigation. This also starts the geofencing services
+if AR View is enabled
+ */
+public class MapArActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
 
     //Holder to hold the mapView.
     private SKMapViewHolder mapHolder;
     //PositionMe Button
-    private ImageButton locateButtonMap;
+    private ImageButton locateButtonAR;
+    //receiver to receive the output of Geocoding
+    private AddressResultReceiver mResultReceiver;
+    //Edit Text widgets to edit the origin and destination addresses
+    private EditText originAddress;
+    private EditText destinationAddress;
     //resulted coordinates for the origin and destination points
     private SKCoordinate originPoint;
     private SKCoordinate destinationPoint;
     //Tag for printing Logs
-    private static final String TAG = "MapActivity";
+    private static final String TAG = "MapArActivity";
+    //Progress bar during the time of addresses search
+    private ProgressBar progressBarAR;
+    //Button for calculateroute, start navigation and stop navigation
+    private Button startButton;
     //to determine if navigation is in process.
     private boolean navigationInProgress = false;
+    //Switch between MapView and Map+AR View
+    private Switch aSwitch;
     //Map View
     private SKMapSurfaceView mapView;
     //for showing the compass on the map view
@@ -96,11 +109,16 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_mapar);
         //Initializing Objects
-        mapHolder = (SKMapViewHolder) findViewById(R.id.view_group_map);
+        mapHolder = (SKMapViewHolder) findViewById(R.id.view_group_mapAR);
         mapHolder.setMapSurfaceListener(this);
         //drawCircle();//TODO: this method can be used to draw the  upcoming geofence circle
+        mResultReceiver = new AddressResultReceiver(null);
+        progressBarAR = (ProgressBar) findViewById(R.id.progressBarAR);
+        destinationAddress = (EditText) findViewById(R.id.destinationAR);
+        originAddress = (EditText) findViewById(R.id.originAR);
+        startButton = (Button) findViewById(R.id.buttonAR);
         mLocation = new LocationUpdate(this);
         sensorUpdate = new SensorUpdate(this);
         //registering the sensor update listener
@@ -117,25 +135,44 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
             e.printStackTrace();
         }
 
+        //Map/Map+AR View Switch
+        aSwitch = (Switch) findViewById(R.id.switchAR);
+        aSwitch.setChecked(true);
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked){
+                    //if the switch is checked geofences would be added
+                    geofencing.addGeofence();
+                    //TODO: This is for testing, remove this two lines in the final run
+                    Intent intent = new Intent(getApplicationContext(), DialogActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    geofencing.removeGeofence();
+                }
+
+            }
+        });
 
         //Position Me Button
-        locateButtonMap = (ImageButton) findViewById(R.id.locateButtonMap);
-        locateButtonMap.setOnClickListener(new View.OnClickListener() {
-                                             @Override
-                                             public void onClick(View v) {if(!headingOn){
-                                                 //display compass
-                                                 setHeading(true);
-                                             }
-                                                 if (mapView != null && mLocation.currentPosition != null) {
-                                                     //centers the map on the current position
-                                                     mapView.centerOnCurrentPosition(17, true, 500);
-                                                 } else {
-                                                     Toast.makeText(getApplicationContext(),
-                                                             getResources().getString(R.string.no_position_available), Toast.LENGTH_SHORT)
-                                                             .show();
-                                                 }
-                                             }
-                                         }
+        locateButtonAR = (ImageButton) findViewById(R.id.locateButtonAR);
+        locateButtonAR.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {if(!headingOn){
+                                               //display compass
+                                               setHeading(true);
+                                           }
+                                               if (mapView != null && mLocation.currentPosition != null) {
+                                                   //centers the map on the current position
+                                                   mapView.centerOnCurrentPosition(17, true, 500);
+                                               } else {
+                                                   Toast.makeText(getApplicationContext(),
+                                                           getResources().getString(R.string.no_position_available), Toast.LENGTH_SHORT)
+                                                           .show();
+                                               }
+                                           }
+                                       }
         );
     }
 
@@ -155,6 +192,40 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         }
     }
 
+    public void onButtonClicked(View view) {
+        //If the central button is clicked while the text reads calculate route
+        if(startButton.getText().equals(getResources().getString(R.string.calculate_route))) {
+
+            //Opens the Geocoding Intent Service
+            Intent intent = new Intent(this, FetchLocationIntentService.class);
+            //put the value of the result receiver from the constants class
+            intent.putExtra(Constants.RECEIVER, mResultReceiver);
+            //put the name of the destination
+            intent.putExtra(Constants.LOCATION_NAME_DATA_EXTRA, destinationAddress.getText().toString());
+            //puts the name of the origin point
+            intent.putExtra(Constants.LOCATION_NAME_DATA_ORIGIN, originAddress.getText().toString());
+            //progress bar to show the backprocess
+            progressBarAR.setVisibility(View.VISIBLE);
+            //starting the intent service
+            startService(intent);
+        }
+        else if(startButton.getText().equals(getResources().getString(R.string.start_navigation))){
+            //if the button reads start navigation: start navigation
+            startButton.setText(R.string.stop_navigation);
+            launchNavigation();
+        }
+
+        else{
+            //when the button reads stop navigation
+            startButton.setText(R.string.calculate_route);
+            //clear the cached route and annotations and stop navigation.
+            clearMap();
+            clearRouteFromCache();
+            mapView.deleteAllAnnotationsAndCustomPOIs();
+            stopNavigation();
+        }
+
+    }
 
     private void launchNavigation() {
 
@@ -204,36 +275,6 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         }
     }
 
-    private void addDataToMap() {
-        //TODO: Add the other data sources as well (needs different images)
-        if(mapView != null) {
-            int i = 0;
-            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getBusstopCoordinates().entrySet()) {
-                SKAnnotation annotation = new SKAnnotation(i);
-                annotation.setLocation(entry.getValue());
-                annotation.setAnnotationType(SKAnnotation.SK_ANNOTATION_TYPE_RED);
-                annotation.setMininumZoomLevel(5);
-                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
-                i++;
-            }
-            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getPharmacyCoordinates().entrySet()) {
-                SKAnnotation annotation = new SKAnnotation(i);
-                annotation.setLocation(entry.getValue());
-                annotation.setAnnotationType(SKAnnotation.SK_ANNOTATION_TYPE_BLUE);
-                annotation.setMininumZoomLevel(5);
-                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
-                i++;
-            }
-            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getSupermarketCoordinates().entrySet()) {
-                SKAnnotation annotation = new SKAnnotation(i);
-                annotation.setLocation(entry.getValue());
-                annotation.setAnnotationType(SKAnnotation.SK_ANNOTATION_TYPE_GREEN);
-                annotation.setMininumZoomLevel(5);
-                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
-                i++;
-            }
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -308,25 +349,24 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                 mapView.centerOnCurrentPosition(17, true, 500);
             }
         }
-        // drawCircle();
+       // drawCircle();
         //enable the compass
         setHeading(true);
-        addDataToMap();
     }
 
     private void applysettings() {
-        //apply different settings like panning, zooming, compass shown and scale shown to the map
-        mapView.getMapSettings().setMapRotationEnabled(true);
-        mapView.getMapSettings().setMapZoomingEnabled(true);
-        mapView.getMapSettings().setMapPanningEnabled(true);
-        mapView.getMapSettings().setZoomWithAnchorEnabled(true);
-        mapView.getMapSettings().setInertiaRotatingEnabled(true);
-        mapView.getMapSettings().setInertiaZoomingEnabled(true);
-        mapView.getMapSettings().setInertiaPanningEnabled(true);
-        mapView.getMapSettings().setCompassPosition(new SKScreenPoint(10, 50));
-        mapView.getMapSettings().setCompassShown(true);
-        mapHolder.setScaleViewEnabled(true);
-        mapHolder.setScaleViewPosition(-10, 200);
+            //apply different settings like panning, zooming, compass shown and scale shown to the map
+            mapView.getMapSettings().setMapRotationEnabled(true);
+            mapView.getMapSettings().setMapZoomingEnabled(true);
+            mapView.getMapSettings().setMapPanningEnabled(true);
+            mapView.getMapSettings().setZoomWithAnchorEnabled(true);
+            mapView.getMapSettings().setInertiaRotatingEnabled(true);
+            mapView.getMapSettings().setInertiaZoomingEnabled(true);
+            mapView.getMapSettings().setInertiaPanningEnabled(true);
+            mapView.getMapSettings().setCompassPosition(new SKScreenPoint(10, 50));
+            mapView.getMapSettings().setCompassShown(true);
+            mapHolder.setScaleViewEnabled(true);
+            mapHolder.setScaleViewPosition(-10, 200);
     }
 
 
@@ -473,6 +513,8 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         SKRouteManager.getInstance().setCurrentRouteByUniqueId(skRouteInfo.getRouteID());
         // zoom to the current route
         SKRouteManager.getInstance().zoomToRoute(1, 1, 8, 8, 8, 8, 0);
+        startButton.setText(getResources().getString(R.string.start_navigation));
+
     }
 
     @Override
@@ -497,7 +539,7 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
 
     @Override
     public void onDestinationReached() {
-        Toast.makeText(MapActivity.this, R.string.destination_reached, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MapArActivity.this, R.string.destination_reached, Toast.LENGTH_SHORT).show();
         // clear the map when reaching destination
         clearMap();
     }
@@ -577,7 +619,7 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         //orientInDegrees = applySmoothAlgorithm((float)(Math.toDegrees(orientation[0])));
         orientInDegrees = Math.toDegrees(orientation[0]);
 
-        if (orientInDegrees < 0) {
+       if (orientInDegrees < 0) {
             mapView.reportNewHeading(360+orientInDegrees);
         }
         if (orientInDegrees > 0) {
@@ -600,4 +642,56 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         return currentCompassValue;
     }*/
 
+    @SuppressLint("ParcelCreator")
+    class AddressResultReceiver extends ResultReceiver {
+        /*
+        private class the handle the results of the geocoding
+         */
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, final Bundle resultData) {
+
+            if (resultCode == Constants.SUCCESS_RESULT) {
+                // If the calculation is successfull, assigns values to the origin and destination addresses
+                final Address address = resultData.getParcelable(Constants.RESULT_D_ADDRESS);
+                final Address oAddress = resultData.getParcelable(Constants.RESULT_O_ADDRESS);
+
+                runOnUiThread(new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      progressBarAR.setVisibility(View.GONE);
+
+                                      if (address != null && oAddress != null) {
+                                          //assign values to the destination and origin coordinates
+                                          //to be used later for calculating route
+                                          destinationPoint = new SKCoordinate(address.getLatitude(), address.getLongitude());
+                                          originPoint = new SKCoordinate(oAddress.getLatitude(), oAddress.getLongitude());
+                                          calculateRoute(originPoint, destinationPoint);
+                                          originAddress.getText().clear();
+                                          destinationAddress.getText().clear();
+                                          Log.i(TAG, "here");
+                                      }
+                                  }
+                              }
+                );
+            } else {
+                runOnUiThread(new Runnable() {
+                    //In case it fails to geocode
+                                  @Override
+                                  public void run() {
+                                      progressBarAR.setVisibility(View.GONE);
+                                      originAddress.getText().clear();
+                                      destinationAddress.getText().clear();
+                                      Toast.makeText(getApplicationContext(), getResources().getString(R.string.geocode_failure),
+                                              Toast.LENGTH_LONG).show();
+                                  }
+                              }
+                );
+            }
+        }
+
+    }
 }

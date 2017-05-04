@@ -27,9 +27,9 @@ public class PermissionsActivity extends AppCompatActivity {
             askPermission();
         }
         else{
-            //if permission is granted then open the launchActivity
+            //if permission is granted then open the modeSelection
             Intent launchNextActivity;
-            launchNextActivity = new Intent(this, LaunchActivity.class);
+            launchNextActivity = new Intent(this, ModeSelectionActivity.class);
 
             launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -53,7 +53,7 @@ public class PermissionsActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent(this, LaunchActivity.class);
+                    Intent intent = new Intent(this, LaunchArActivity.class);
                     startActivity(intent);
                 }
                 else {

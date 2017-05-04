@@ -28,8 +28,13 @@
             android:name="com.skobbler.ngx.API_KEY"
             android:value="2720b426a5dfa21567c8a3dae6baf2300e4d4703ee35b53a6b886c677190bb34" />
 
+        <activity android:name=".Activities.MapArActivity" />
+        <activity android:name=".Activities.LaunchArActivity" />
+        <activity android:name=".Activities.LaunchMapActivity" />
+        <activity android:name=".Activities.LaunchPictureActivity" />
+        <activity android:name=".Activities.MapPictureActivity" />
         <activity android:name=".Activities.MapActivity" />
-        <activity android:name=".Activities.LaunchActivity" />
+        <activity android:name=".Activities.ModeSelectionActivity"/>
         <activity android:name=".Activities.PermissionsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

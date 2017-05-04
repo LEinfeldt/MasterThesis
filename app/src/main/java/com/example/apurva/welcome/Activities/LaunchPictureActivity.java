@@ -10,11 +10,11 @@ import com.skobbler.ngx.SKDeveloperKeyException;
 import com.skobbler.ngx.SKMaps;
 import com.skobbler.ngx.SKMapsInitializationListener;
 
-/*This is the activity where you activate SKMaps
- For getting Skobbeler API for android gradle repositories and dependencies were changed accordingly
- //TODO: Put a logo on this activity so that it's displayed before the Map Activity begins.
+/**
+ * Created by lasse on 27.04.2017.
  */
-public class LaunchActivity extends AppCompatActivity implements SKMapsInitializationListener {
+
+public class LaunchPictureActivity extends AppCompatActivity implements SKMapsInitializationListener{
 
 
     @Override
@@ -34,7 +34,7 @@ public class LaunchActivity extends AppCompatActivity implements SKMapsInitializ
 
     @Override
     public void onLibraryInitialized(boolean isSuccessful) {
-        //if library initialization is successful start MapActivity
+        //if library initialization is successful start MapPictureActivity
         if (isSuccessful) {
             finish();
             goToMap();
@@ -42,10 +42,10 @@ public class LaunchActivity extends AppCompatActivity implements SKMapsInitializ
 
     }
 
-    private void goToMap(){
-        //launching MapActivity and clearing this one so that on back pressed this is not displayed
+    public void goToMap() {
+        //launching MapPictureActivity and clearing this one so that on back pressed this is not displayed
         Intent launchNextActivity;
-        launchNextActivity = new Intent(this, MapActivity.class);
+        launchNextActivity = new Intent(this, MapPictureActivity.class);
         launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(launchNextActivity);
     }
@@ -60,5 +60,4 @@ public class LaunchActivity extends AppCompatActivity implements SKMapsInitializ
     protected void onPause(){
         super.onPause();
     }
-
 }
