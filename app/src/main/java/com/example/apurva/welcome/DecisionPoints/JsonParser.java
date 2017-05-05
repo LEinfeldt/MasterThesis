@@ -146,7 +146,7 @@ public class JsonParser {
     }
 
     /**
-     * @desc Get a hashmap with all coordinates of the busstops in the json
+     * Get a hashmap with all coordinates of the busstops in the json
      * @return Hashmap with the values and the names
      */
     public HashMap<String, SKCoordinate> getBusstopCoordinates() {
@@ -172,7 +172,7 @@ public class JsonParser {
     }
 
     /**
-     * @desc Get a hashmap with all coordinates of the supermarkets in the json
+     * Get a hashmap with all coordinates of the supermarkets in the json
      * @return Hashmap with the values and the names
      */
     public HashMap<String, SKCoordinate> getSupermarketCoordinates() {
@@ -198,7 +198,7 @@ public class JsonParser {
     }
 
     /**
-     * @desc Get a hashmap with all coordinates of the pharmacies in the json
+     * Get a hashmap with all coordinates of the pharmacies in the json
      * @return Hashmap with the values and the names
      */
     public HashMap<String, SKCoordinate> getPharmacyCoordinates() {
@@ -223,6 +223,213 @@ public class JsonParser {
         return latlnglist;
     }
 
-    //TODO: add methods for all the other datasets, if needed (ask Ana)
+    /**
+     * Get a hashmap with all coordinates of the parks in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getParkCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("parks");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = "park" + i;
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
+    /**
+     * Get a hashmap with all coordinates of the schools in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getSchoolCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("schools");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("name") && jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = jsonInside.getString("name");
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
+    /**
+     * Get a hashmap with all coordinates of the health centers in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getHealthcenterCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("healthCenters");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = "center" + i;
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
+    /**
+     * Get a hashmap with all coordinates of the language centers in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getLanguageCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("language");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = "center" + i;
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
+    /**
+     * Get a hashmap with all coordinates of the insurances in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getInsuranceCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("insurance");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = "insurance" + i;
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
+    /**
+     * Get a hashmap with all coordinates of the administration in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getAdministrationCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("administration");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = "administration" + i;
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
+    /**
+     * Get a hashmap with all coordinates of the libraries in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getLibraryCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("libraries");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("name") && jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = jsonInside.getString("name");
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
+    /**
+     * Get a hashmap with all coordinates of the sportfacilities in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getSportCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("sportFacilities");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = "sport" + i;
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
 }
 

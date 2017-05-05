@@ -1,24 +1,16 @@
 package com.example.apurva.welcome.Activities;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
-import android.location.Address;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
@@ -37,7 +29,6 @@ import com.skobbler.ngx.map.SKCoordinateRegion;
 import com.skobbler.ngx.map.SKMapCustomPOI;
 import com.skobbler.ngx.map.SKMapPOI;
 import com.skobbler.ngx.map.SKMapSettings;
-import com.skobbler.ngx.SKMaps;
 import com.skobbler.ngx.map.SKMapSurfaceListener;
 import com.skobbler.ngx.map.SKMapSurfaceView;
 import com.skobbler.ngx.map.SKMapViewHolder;
@@ -57,8 +48,6 @@ import com.skobbler.ngx.routing.SKRouteSettings;
 import org.json.*;
 
 import java.util.Map;
-
-import static android.R.attr.id;
 
 /**
  * Created by lasse on 27.04.2017.
@@ -210,7 +199,7 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     }
 
     /**
-     * @desc Load the data from JSON file and add the markers to the map
+     * Load the data from JSON file and add the markers to the map
      */
     private void addDataToMap() {
         //TODO: Add the other data sources as well (needs different images)
@@ -221,14 +210,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getBusstopCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
                 annotation.setLocation(entry.getValue());
-                annotation.setAnnotationType(SKAnnotation.SK_ANNOTATION_TYPE_RED);
                 annotation.setMininumZoomLevel(5);
                 // add an annotation with a view
                 SKAnnotationView annotationView = new SKAnnotationView();
                 //get the view, containing the image, that should be displayed
-                View customView =(RelativeLayout) ((LayoutInflater)
+                View customView = ((LayoutInflater)
                         getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-                        R.layout.layout_custom_view, null, false);
+                        R.layout.layout_bus, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
@@ -238,14 +226,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getPharmacyCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
                 annotation.setLocation(entry.getValue());
-                annotation.setAnnotationType(SKAnnotation.SK_ANNOTATION_TYPE_BLUE);
                 annotation.setMininumZoomLevel(5);
                 // add an annotation with a view
                 SKAnnotationView annotationView = new SKAnnotationView();
                 //get the view, containing the image, that should be displayed
-                View customView =(RelativeLayout) ((LayoutInflater)
+                View customView = ((LayoutInflater)
                         getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-                        R.layout.layout_custom_view, null, false);
+                        R.layout.layout_pharmacy, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
@@ -259,9 +246,164 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                 // add an annotation with a view
                 SKAnnotationView annotationView = new SKAnnotationView();
                 //get the view, containing the image, that should be displayed
-                View customView =(RelativeLayout) ((LayoutInflater)
+                //with the logo of the supermarket that is chosen
+                if(entry.getKey().matches("Aldi")) {
+                    View customView = ((LayoutInflater)
+                            getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                            R.layout.layout_aldi, null, false);
+                    annotationView.setView(customView);
+                }
+                else if(entry.getKey().matches("Lidl")) {
+                    View customView = ((LayoutInflater)
+                            getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                            R.layout.layout_lidl, null, false);
+                    annotationView.setView(customView);
+                }
+                else if(entry.getKey().matches("Marktkauf")) {
+                    View customView = ((LayoutInflater)
+                            getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                            R.layout.layout_marktkauf, null, false);
+                    annotationView.setView(customView);
+                }
+                else if(entry.getKey().matches("Rewe") || entry.getKey().matches("Rewe1")) {
+                    View customView = ((LayoutInflater)
+                            getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                            R.layout.layout_rewe, null, false);
+                    annotationView.setView(customView);
+                }
+                else {
+                    View customView = ((LayoutInflater)
+                            getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                            R.layout.layout_shop, null, false);
+                    annotationView.setView(customView);
+                }
+                annotation.setAnnotationView(annotationView);
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+            }
+            //add parks
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getParkCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
                         getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-                        R.layout.layout_custom_view, null, false);
+                        R.layout.layout_park, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+            }
+            //add schools
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getSchoolCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_school, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+            }
+            //add sport facilities
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getSportCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_sports, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+            }
+            //add insurances
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getInsuranceCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_tk, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+            }
+            //add language centers
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getLanguageCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_language, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+            }
+            //add sport libraries
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getLibraryCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_library, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+            }
+            //add administration
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getAdministrationCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_town, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+            }
+            //add health centers
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getHealthcenterCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
+                        getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_redcross, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
