@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="layerNames">
+        <item>Supermarkets</item>
+        <item>Pharmacies</item>
+        <item>Health</item>
+        <item>Busstops</item>
+        <item>Sports</item>
+        <item>Parks</item>
+        <item>Schools+Kindergardens</item>
+        <item>Libraries</item>
+        <item>Languagecenter</item>
+        <item>Administration</item>
+        <item>Insurance</item>
+    </array>
+</resources>

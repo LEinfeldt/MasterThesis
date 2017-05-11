@@ -28,8 +28,8 @@
         android:layout_height="wrap_content"
         android:text="@string/ar"
         android:id="@+id/switchAR"
-       android:layout_below="@+id/destinationAR"
-       android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/destinationAR"
+        android:layout_alignParentEnd="true" />
 
     <EditText
         android:singleLine="true"

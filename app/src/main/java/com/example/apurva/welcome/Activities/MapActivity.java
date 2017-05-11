@@ -5,12 +5,17 @@ import android.graphics.Bitmap;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
@@ -47,6 +52,7 @@ import com.skobbler.ngx.routing.SKRouteSettings;
 
 import org.json.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,6 +74,26 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     private boolean navigationInProgress = false;
     //Map View
     private SKMapSurfaceView mapView;
+
+    //layers for the data to be displayed on the map
+    private SKAnnotation[] supermarkets;
+    private SKAnnotation[] pharmacies;
+    private SKAnnotation[] health;
+    private SKAnnotation[] busstops;
+    private SKAnnotation[] sports;
+    private SKAnnotation[] parks;
+    private SKAnnotation[] schools;
+    private SKAnnotation[] libraries;
+    private SKAnnotation[] language;
+    private SKAnnotation[] administration;
+    private SKAnnotation[] insurance;
+
+    //drawer item
+    private DrawerLayout mDrawerLayout;
+    //list of items in the drawer
+    private ListView mDrawerList;
+    //String array with the names of the layers
+    private String[] layerNames;
     //for showing the compass on the map view
     private boolean headingOn;
     //objects for different classes
@@ -96,6 +122,25 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         mapHolder.setMapSurfaceListener(this);
         //drawCircle();//TODO: this method can be used to draw the  upcoming geofence circle
         mLocation = new LocationUpdate(this);
+        //Initialize the drawer
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //Initialize the drawer list
+        mDrawerList = (ListView) findViewById(R.id.left_drawer_map);
+        //aSwitch = (Switch) findViewById(R.id.switchLayers);
+        //get the Strings from resources
+        layerNames = getResources().getStringArray(R.array.layerNames);
+        //set an adapter for the drawer list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, R.id.txtTitle, layerNames));
+
+        // set a listener to the list
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //toggle the visibility of the selected layer
+                toggleDataLayer(position);
+            }
+        });
+
         sensorUpdate = new SensorUpdate(this);
         //registering the sensor update listener
         sensorUpdate.setListener(this);
@@ -199,13 +244,161 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     }
 
     /**
+     * Toggle the visibility of a given layer in the map.
+     * @param position Position of the layer that shall be toggled
+     */
+    private void toggleDataLayer(int position) {
+        Log.i("Position", "Clicked: " + position);
+        //change the visibility of the selected layer
+        if(mapView != null) {
+            switch (position) {
+                case 0:
+                    if(mapView.getAllAnnotations().contains(supermarkets[0])) {
+                        for(int i = 0; i < supermarkets.length; i++) {
+                            mapView.deleteAnnotation(supermarkets[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < supermarkets.length; i++) {
+                            mapView.addAnnotation(supermarkets[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 1:
+                    if(mapView.getAllAnnotations().contains(pharmacies[0])) {
+                        for(int i = 0; i < pharmacies.length; i++) {
+                            mapView.deleteAnnotation(pharmacies[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < pharmacies.length; i++) {
+                            mapView.addAnnotation(pharmacies[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 2:
+                    if(mapView.getAllAnnotations().contains(health[0])) {
+                        for(int i = 0; i < health.length; i++) {
+                            mapView.deleteAnnotation(health[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < health.length; i++) {
+                            mapView.addAnnotation(health[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 3:
+                    if(mapView.getAllAnnotations().contains(busstops[0])) {
+                        for(int i = 0; i < busstops.length; i++) {
+                            mapView.deleteAnnotation(busstops[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < busstops.length; i++) {
+                            mapView.addAnnotation(busstops[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 4:
+                    if(mapView.getAllAnnotations().contains(sports[0])) {
+                        for(int i = 0; i < sports.length; i++) {
+                            mapView.deleteAnnotation(sports[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < sports.length; i++) {
+                            mapView.addAnnotation(sports[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 5:
+                    if(mapView.getAllAnnotations().contains(parks[0])) {
+                        for(int i = 0; i < parks.length; i++) {
+                            mapView.deleteAnnotation(parks[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < parks.length; i++) {
+                            mapView.addAnnotation(parks[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 6:
+                    if(mapView.getAllAnnotations().contains(schools[0])) {
+                        for(int i = 0; i < schools.length; i++) {
+                            mapView.deleteAnnotation(schools[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < schools.length; i++) {
+                            mapView.addAnnotation(schools[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 7:
+                    if(mapView.getAllAnnotations().contains(libraries[0])) {
+                        for(int i = 0; i < libraries.length; i++) {
+                            mapView.deleteAnnotation(libraries[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < libraries.length; i++) {
+                            mapView.addAnnotation(libraries[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 8:
+                    if(mapView.getAllAnnotations().contains(language[0])) {
+                        for(int i = 0; i < language.length; i++) {
+                            mapView.deleteAnnotation(language[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < language.length; i++) {
+                            mapView.addAnnotation(language[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 9:
+                    if(mapView.getAllAnnotations().contains(administration[0])) {
+                        for(int i = 0; i < administration.length; i++) {
+                            mapView.deleteAnnotation(administration[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < administration.length; i++) {
+                            mapView.addAnnotation(administration[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+                case 10:
+                    if(mapView.getAllAnnotations().contains(insurance[0])) {
+                        for(int i = 0; i < insurance.length; i++) {
+                            mapView.deleteAnnotation(insurance[i].getUniqueID());
+                        }
+                    }
+                    else {
+                        for(int i = 0; i < insurance.length; i++) {
+                            mapView.addAnnotation(insurance[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                    }
+                    break;
+            }
+        }
+
+    };
+
+    /**
      * Load the data from JSON file and add the markers to the map
      */
     private void addDataToMap() {
-        //TODO: Add the other data sources as well (needs different images)
         if(mapView != null) {
             //counter for unique id for each marker
             int i = 0;
+            //counter for the entries in the array
+            int k = 0;
+            busstops = new SKAnnotation[jsonParser.getBusstopCoordinates().size()];
             //load the busstops
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getBusstopCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -219,9 +412,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_bus, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                busstops[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
+            k = 0;
+            pharmacies = new SKAnnotation[jsonParser.getPharmacyCoordinates().size()];
             //add pharmacy
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getPharmacyCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -235,9 +432,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_pharmacy, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                pharmacies[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
+            k = 0;
+            supermarkets = new SKAnnotation[jsonParser.getSupermarketCoordinates().size()];
             //load supermarkets
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getSupermarketCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -278,9 +479,14 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                     annotationView.setView(customView);
                 }
                 annotation.setAnnotationView(annotationView);
+                supermarkets[k] = annotation;
+                Log.i("Supermarket" + k, "wert ist:" + supermarkets[k]);
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
+            k = 0;
+            parks = new SKAnnotation[jsonParser.getParkCoordinates().size()];
             //add parks
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getParkCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -294,9 +500,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_park, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                parks[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
+            k = 0;
+            schools = new SKAnnotation[jsonParser.getSchoolCoordinates().size()];
             //add schools
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getSchoolCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -310,9 +520,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_school, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                schools[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
+            k = 0;
+            sports = new SKAnnotation[jsonParser.getSportCoordinates().size()];
             //add sport facilities
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getSportCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -326,9 +540,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_sports, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                sports[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
+            k = 0;
+            insurance = new SKAnnotation[jsonParser.getInsuranceCoordinates().size()];
             //add insurances
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getInsuranceCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -342,9 +560,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_tk, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                insurance[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
+            k = 0;
+            language = new SKAnnotation[jsonParser.getLanguageCoordinates().size()];
             //add language centers
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getLanguageCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -358,10 +580,14 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_language, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                language[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
-            //add sport libraries
+            k = 0;
+            libraries = new SKAnnotation[jsonParser.getLibraryCoordinates().size()];
+            //add libraries
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getLibraryCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
                 annotation.setLocation(entry.getValue());
@@ -374,9 +600,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_library, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                libraries[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
+            k = 0;
+            administration = new SKAnnotation[jsonParser.getAdministrationCoordinates().size()];
             //add administration
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getAdministrationCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -390,9 +620,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_town, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                administration[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
+            k = 0;
+            health = new SKAnnotation[jsonParser.getHealthcenterCoordinates().size()];
             //add health centers
             for(Map.Entry<String, SKCoordinate> entry : jsonParser.getHealthcenterCoordinates().entrySet()) {
                 SKAnnotation annotation = new SKAnnotation(i);
@@ -406,8 +640,10 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         R.layout.layout_redcross, null, false);
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
+                health[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
+                k++;
             }
         }
     }

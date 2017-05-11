@@ -1,24 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Activities.MapActivity"
-    >
+    android:layout_height="match_parent">
 
-    <com.skobbler.ngx.map.SKMapViewHolder
-        android:id="@+id/view_group_map"
+    <!-- Main layout of the window -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        tools:context=".Activities.MapActivity"
+        >
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/locateButtonMap"
-        android:src="@mipmap/ic_my_location"
-        android:contentDescription="@string/current_position"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        <com.skobbler.ngx.map.SKMapViewHolder
+            android:id="@+id/view_group_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
-</RelativeLayout>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/locateButtonMap"
+            android:src="@mipmap/ic_my_location"
+            android:contentDescription="@string/current_position"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+    <!-- Layout for the navigation drawer -->
+    <ListView android:id="@+id/left_drawer_map"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="multipleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="@color/colorPrimary"/>
+</android.support.v4.widget.DrawerLayout>
