@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
 import com.example.apurva.welcome.Geocoding.Constants;
 import com.example.apurva.welcome.Geocoding.FetchLocationIntentService;
 import com.example.apurva.welcome.R;
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
 import com.skobbler.ngx.map.SKAnimationSettings;
@@ -56,6 +58,8 @@ import org.json.JSONException;
 
 import java.util.Map;
 
+import static com.example.apurva.welcome.R.drawable.img0;
+
 /**
  * Created by lasse on 27.04.2017.
  */
@@ -77,6 +81,8 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     private SKMapSurfaceView mapView;
     //for showing the compass on the map view
     private boolean headingOn;
+    //image holder
+    private ImageView image;
     //objects for different classes
     private LocationUpdate mLocation;
     private Geofencing geofencing;
@@ -103,6 +109,9 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         mapHolder = (SKMapViewHolder) findViewById(R.id.view_group_mapPicture);
         mapHolder.setMapSurfaceListener(this);
         //drawCircle();//TODO: this method can be used to draw the  upcoming geofence circle
+
+        //get the image holder
+        image = (ImageView) findViewById(R.id.image_holder);
         mResultReceiver = new AddressResultReceiver(null);
         mLocation = new LocationUpdate(this);
         sensorUpdate = new SensorUpdate(this);
@@ -183,6 +192,16 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
                 mapView.addCircle(fence);
             }
         }
+    }
+
+    /**
+     * When a geofence is entered the image in the view is updated to the next one
+     */
+    private void enterGeofence() {
+        //geofencing;
+        //use a JSON file with the coordinates and picture resource associated like in markus' app
+        // --> write function in JSONParser
+        image.setImageResource(R.drawable.img1);
     }
 
 

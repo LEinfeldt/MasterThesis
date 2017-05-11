@@ -15,10 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
@@ -52,7 +50,6 @@ import com.skobbler.ngx.routing.SKRouteSettings;
 
 import org.json.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -98,7 +95,6 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     private boolean headingOn;
     //objects for different classes
     private LocationUpdate mLocation;
-    private Geofencing geofencing;
     private SensorUpdate sensorUpdate;
     private JsonParser jsonParser;
     //sensor value of accelerometer
@@ -149,13 +145,6 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        try {
-            geofencing = new Geofencing(this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
 
         //Position Me Button
         locateButtonMap = (ImageButton) findViewById(R.id.locateButtonMap);
@@ -679,13 +668,11 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     @Override
     protected void onStart(){
         super.onStart();
-        geofencing.apiConnect();
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        geofencing.apiDisconnect();
     }
 
     @Override
