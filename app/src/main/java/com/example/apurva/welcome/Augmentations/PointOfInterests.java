@@ -108,6 +108,7 @@ public class PointOfInterests extends View implements SensorUpdate.AccelMagnoLis
         canvas.drawBitmap(bitmap, w/2, h/4, contentPaint);
         //to draw another point of interest
         //canvas.drawBitmap(bitmap2,(w/2)+x, h/2,contentPaint);
+        //TODO: make cases for each augmentation Ana wants to have on the view
     }
 
 

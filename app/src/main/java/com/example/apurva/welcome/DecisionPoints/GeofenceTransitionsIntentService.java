@@ -25,12 +25,12 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     public GeofenceTransitionsIntentService() {
         super(TAG);  // use TAG to name the IntentService worker thread
-        intent = new Intent(getApplicationContext(), DialogActivity.class);
+        intent = new Intent(getBaseContext(), DialogActivity.class); //gibt getPackangeName nullpointer exception
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
+        Log.i("The intent:", "IS THE FOLLOWING: "+ intent);
         GeofencingEvent event = GeofencingEvent.fromIntent(intent);
         if (event.hasError()) {
             Log.e(TAG, "GeofencingEvent Error: " + event.getErrorCode());

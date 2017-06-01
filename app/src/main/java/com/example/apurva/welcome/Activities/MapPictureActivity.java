@@ -195,13 +195,12 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     }
 
     /**
-     * When a geofence is entered the image in the view is updated to the next one
+     * Update the iamge in the image view when a new decision point is reached
      */
-    private void enterGeofence() {
-        //geofencing;
-        //use a JSON file with the coordinates and picture resource associated like in markus' app
-        // --> write function in JSONParser
-        image.setImageResource(R.drawable.img1);
+    public void updateImage() {
+        //TODO: find out how to get through a row of images to use the next
+        int next = R.drawable.img0;
+        image.setImageResource(next);
     }
 
 
@@ -286,7 +285,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     private void applysettings() {
         //apply different settings like panning, zooming, compass shown and scale shown to the map
         mapView.getMapSettings().setMapRotationEnabled(false);
-        mapView.getMapSettings().setMapZoomingEnabled(false);
+        mapView.getMapSettings().setMapZoomingEnabled(true);
         mapView.getMapSettings().setMapPanningEnabled(false);
         mapView.getMapSettings().setZoomWithAnchorEnabled(false);
         mapView.getMapSettings().setInertiaRotatingEnabled(false);

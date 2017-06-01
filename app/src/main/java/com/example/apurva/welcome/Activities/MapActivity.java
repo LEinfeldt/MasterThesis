@@ -13,8 +13,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
@@ -89,6 +92,8 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     private DrawerLayout mDrawerLayout;
     //list of items in the drawer
     private ListView mDrawerList;
+    private ListView listView1;
+    private Switch mSwitch;
     //String array with the names of the layers
     private String[] layerNames;
     //for showing the compass on the map view
@@ -122,12 +127,10 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //Initialize the drawer list
         mDrawerList = (ListView) findViewById(R.id.left_drawer_map);
-        //aSwitch = (Switch) findViewById(R.id.switchLayers);
         //get the Strings from resources
         layerNames = getResources().getStringArray(R.array.layerNames);
         //set an adapter for the drawer list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, R.id.txtTitle, layerNames));
-
         // set a listener to the list
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

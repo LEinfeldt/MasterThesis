@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.apurva.welcome.Logger.Logger;
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
@@ -63,6 +64,8 @@ if AR View is enabled
  */
 public class MapArActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
 
+    //logger instance
+    Logger logger;
     //Holder to hold the mapView.
     private SKMapViewHolder mapHolder;
     //PositionMe Button
@@ -121,6 +124,13 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         startButton = (Button) findViewById(R.id.buttonAR);
         mLocation = new LocationUpdate(this);
         sensorUpdate = new SensorUpdate(this);
+        logger = new Logger();
+        try {
+            logger.setupLogging("Map + AR", getApplicationContext());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        };
         //registering the sensor update listener
         sensorUpdate.setListener(this);
         try {
