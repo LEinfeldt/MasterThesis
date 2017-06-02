@@ -29,7 +29,7 @@ public class Logger {
     private CSVWriter mWriter;
 
     private String mExperimentID = "default";
-    private String[] fileHeaderCombined = {"ID","event","log_timestamp", "original_lat", "original_lon"};
+    private String[] fileHeaderCombined = {"ID","event","log_timestamp", "original_lat", "original_lon", "layers"};
 
     private long mID = 0;
 
@@ -86,6 +86,29 @@ public class Logger {
 
         mID += 1;
     }
+
+    /**
+     * Log a change in layer selection
+     */
+    public void logLayerSelection(String layerAction) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM-dd HH:mm:ss");
+
+        String idString = "" + mID;
+        String event = "Layers changed";
+        String logTimeStamp = dateFormat.format(System.currentTimeMillis());
+        String lat = "";
+        String lng = "";
+        String activeLayer = layerAction;
+
+        String[] data = {idString, event, logTimeStamp, lat, lng, activeLayer};
+
+        mWriter.writeNext(data);
+        mID++;
+    }
+
+
+    //TODO: Write method to log geofence event (enter/leaving)
 
     public void stopLoggingAndWriteFile() throws IOException {
 

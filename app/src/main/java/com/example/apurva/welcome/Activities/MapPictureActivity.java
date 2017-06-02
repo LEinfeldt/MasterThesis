@@ -286,7 +286,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         //apply different settings like panning, zooming, compass shown and scale shown to the map
         mapView.getMapSettings().setMapRotationEnabled(false);
         mapView.getMapSettings().setMapZoomingEnabled(true);
-        mapView.getMapSettings().setMapPanningEnabled(false);
+        mapView.getMapSettings().setMapPanningEnabled(true);
         mapView.getMapSettings().setZoomWithAnchorEnabled(false);
         mapView.getMapSettings().setInertiaRotatingEnabled(false);
         mapView.getMapSettings().setInertiaZoomingEnabled(false);

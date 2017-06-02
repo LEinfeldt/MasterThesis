@@ -20,13 +20,13 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.apurva.welcome.Logger.Logger;
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
 import com.example.apurva.welcome.Geocoding.Constants;
 import com.example.apurva.welcome.Geocoding.FetchLocationIntentService;
+import com.example.apurva.welcome.Logger.Logger;
 import com.example.apurva.welcome.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
@@ -56,6 +56,8 @@ import com.skobbler.ngx.routing.SKRouteSettings;
 import org.json.JSONException;
 
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /*
@@ -65,7 +67,9 @@ if AR View is enabled
 public class MapArActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
 
     //logger instance
-    Logger logger;
+    private Logger logger;
+    //timer for the logger
+    private Timer timer;
     //Holder to hold the mapView.
     private SKMapViewHolder mapHolder;
     //PositionMe Button
@@ -124,15 +128,17 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         startButton = (Button) findViewById(R.id.buttonAR);
         mLocation = new LocationUpdate(this);
         sensorUpdate = new SensorUpdate(this);
-        logger = new Logger();
-        try {
-            logger.setupLogging("Map + AR", getApplicationContext());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        };
         //registering the sensor update listener
         sensorUpdate.setListener(this);
+        //initialize the logger
+        this.logger = new Logger();
+        try {
+            logger.setupLogging("Map + AR", this);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
         try {
             jsonParser = new JsonParser(this);
         } catch (JSONException e) {
@@ -144,6 +150,16 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        //setup the regular logging
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //log the current position
+                logger.logLocation(mLocation.currentPosition.getCoordinate());
+            }
+        }, 0, 1000);
 
         //Map/Map+AR View Switch
         aSwitch = (Switch) findViewById(R.id.switchAR);
@@ -290,6 +306,12 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
     public void onBackPressed() {
         //double click to exit the application
         if (exit) {
+            try {
+                logger.stopLoggingAndWriteFile();
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
             finish(); // finish activity
         } else {
             Toast.makeText(this, "Press Back again to Exit.",

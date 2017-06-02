@@ -24,6 +24,7 @@ import com.example.apurva.welcome.DecisionPoints.JsonParser;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
 import com.example.apurva.welcome.Geocoding.Constants;
+import com.example.apurva.welcome.Logger.Logger;
 import com.example.apurva.welcome.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
@@ -54,6 +55,8 @@ import com.skobbler.ngx.routing.SKRouteSettings;
 import org.json.*;
 
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by lasse on 27.04.2017.
@@ -61,6 +64,10 @@ import java.util.Map;
 
 public class MapActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
 
+    //logger
+    private Logger logger;
+    //Timer for regular logs
+    private Timer timer;
     //Holder to hold the mapView.
     private SKMapViewHolder mapHolder;
     //PositionMe Button
@@ -148,6 +155,25 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        //initialize the logger
+        this.logger = new Logger();
+        try {
+            logger.setupLogging("Map", this);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        //setup the regular logging
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //log the current position
+                logger.logLocation(mLocation.currentPosition.getCoordinate());
+            }
+        }, 0, 1000);
 
         //Position Me Button
         locateButtonMap = (ImageButton) findViewById(R.id.locateButtonMap);
@@ -249,11 +275,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < supermarkets.length; i++) {
                             mapView.deleteAnnotation(supermarkets[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Supermarkets inactive");
                     }
                     else {
                         for(int i = 0; i < supermarkets.length; i++) {
                             mapView.addAnnotation(supermarkets[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Supermarkets active");
                     }
                     break;
                 case 1:
@@ -261,11 +289,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < pharmacies.length; i++) {
                             mapView.deleteAnnotation(pharmacies[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Pharmacies inactive");
                     }
                     else {
                         for(int i = 0; i < pharmacies.length; i++) {
                             mapView.addAnnotation(pharmacies[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Pharmacies active");
                     }
                     break;
                 case 2:
@@ -273,11 +303,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < health.length; i++) {
                             mapView.deleteAnnotation(health[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Health inactive");
                     }
                     else {
                         for(int i = 0; i < health.length; i++) {
                             mapView.addAnnotation(health[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Health active");
                     }
                     break;
                 case 3:
@@ -285,11 +317,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < busstops.length; i++) {
                             mapView.deleteAnnotation(busstops[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Busstops inactive");
                     }
                     else {
                         for(int i = 0; i < busstops.length; i++) {
                             mapView.addAnnotation(busstops[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Busstops active");
                     }
                     break;
                 case 4:
@@ -297,11 +331,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < sports.length; i++) {
                             mapView.deleteAnnotation(sports[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Sports inactive");
                     }
                     else {
                         for(int i = 0; i < sports.length; i++) {
                             mapView.addAnnotation(sports[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Sports active");
                     }
                     break;
                 case 5:
@@ -309,11 +345,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < parks.length; i++) {
                             mapView.deleteAnnotation(parks[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Parks inactive");
                     }
                     else {
                         for(int i = 0; i < parks.length; i++) {
                             mapView.addAnnotation(parks[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Parks active");
                     }
                     break;
                 case 6:
@@ -321,11 +359,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < schools.length; i++) {
                             mapView.deleteAnnotation(schools[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Schools inactive");
                     }
                     else {
                         for(int i = 0; i < schools.length; i++) {
                             mapView.addAnnotation(schools[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Schools active");
                     }
                     break;
                 case 7:
@@ -333,11 +373,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < libraries.length; i++) {
                             mapView.deleteAnnotation(libraries[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Libraries inactive");
                     }
                     else {
                         for(int i = 0; i < libraries.length; i++) {
                             mapView.addAnnotation(libraries[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Libraries active");
                     }
                     break;
                 case 8:
@@ -345,11 +387,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < language.length; i++) {
                             mapView.deleteAnnotation(language[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Languagecenter inactive");
                     }
                     else {
                         for(int i = 0; i < language.length; i++) {
                             mapView.addAnnotation(language[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Languagecenter active");
                     }
                     break;
                 case 9:
@@ -357,11 +401,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < administration.length; i++) {
                             mapView.deleteAnnotation(administration[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Administration inactive");
                     }
                     else {
                         for(int i = 0; i < administration.length; i++) {
                             mapView.addAnnotation(administration[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Administration active");
                     }
                     break;
                 case 10:
@@ -369,11 +415,13 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                         for(int i = 0; i < insurance.length; i++) {
                             mapView.deleteAnnotation(insurance[i].getUniqueID());
                         }
+                        logger.logLayerSelection("Insurance inactive");
                     }
                     else {
                         for(int i = 0; i < insurance.length; i++) {
                             mapView.addAnnotation(insurance[i], SKAnimationSettings.ANIMATION_NONE);
                         }
+                        logger.logLayerSelection("Insurance active");
                     }
                     break;
             }
@@ -644,6 +692,12 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     public void onBackPressed() {
         //double click to exit the application
         if (exit) {
+            try {
+                logger.stopLoggingAndWriteFile();
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
             finish(); // finish activity
         } else {
             Toast.makeText(this, "Press Back again to Exit.",

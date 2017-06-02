@@ -27,6 +27,5 @@ public class LocationUpdate implements SKCurrentPositionListener{
     public void onCurrentPositionUpdate(SKPosition skPosition) {
         this.currentPosition = skPosition;
         SKPositionerManager.getInstance().reportNewGPSPosition(currentPosition);
-
     }
 }
