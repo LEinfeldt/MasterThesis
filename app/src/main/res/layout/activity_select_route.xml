@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/route1Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/route1"
+        android:onClick="onRoute1Click"/>
+
+    <Button
+        android:id="@+id/route2Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/route2"
+        android:onClick="onRoute2Click"/>
+
+    <Button
+        android:id="@+id/route3Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/route3"
+        android:onClick="onRoute3Click"/>
+
+    <Button
+        android:id="@+id/Route4Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/route4"
+        android:onClick="onRoute4Click"/>
+
+    <Button
+        android:id="@+id/route5Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/route5"
+        android:onClick="onRoute5Click"/>
+</LinearLayout>

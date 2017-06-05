@@ -16,11 +16,17 @@
     <string name="stop_navigation">Stop Navigation</string>
     <string name="current_location">Current Location</string>
     <string name="destination_reached">Destination reached</string>
-    <string name="dialog_open_camera">Open your Camera for AR View</string>
+    <string name="dialog_title">Go ahead! You are close to your destination.</string>
+    <string name="dialog_open_camera">Do you want to open your Camera for AR View?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="mapARView">Map + AR</string>
     <string name="mapPictureView">Map + Picture</string>
     <string name="mapView">Map</string>
     <string name="picture">Picture</string>
+    <string name="route1">Oxford to Aldi</string>
+    <string name="route2">Oxford to UKM</string>
+    <string name="route3">Oxford to Bürgebüro</string>
+    <string name="route4">Oxford to FC Gievenbeck</string>
+    <string name="route5">Oxford to Sportpark</string>
 </resources>

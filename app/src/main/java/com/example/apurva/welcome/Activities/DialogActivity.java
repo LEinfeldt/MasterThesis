@@ -24,6 +24,7 @@ public class DialogActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setMessage(R.string.dialog_open_camera)
+                .setTitle(R.string.dialog_title)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //If the users selects: launch the cameraActivity

@@ -33,6 +33,7 @@
         <activity android:name=".Activities.LaunchArActivity" />
         <activity android:name=".Activities.LaunchMapActivity" />
         <activity android:name=".Activities.LaunchPictureActivity" />
+        <activity android:name=".Activities.SelectRouteActivity" />
         <activity
             android:name=".Activities.MapPictureActivity"
             android:theme="@style/AppTheme.NoActionBar"/>

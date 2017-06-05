@@ -67,6 +67,8 @@ if AR View is enabled
  */
 public class MapArActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
 
+    //get the intent
+    Intent i;
     //logger instance
     private Logger logger;
     //timer for the logger
@@ -119,6 +121,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_mapar);
         //Initializing Objects
+        i = getIntent();
         mapHolder = (SKMapViewHolder) findViewById(R.id.view_group_mapAR);
         mapHolder.setMapSurfaceListener(this);
         //drawCircle();//TODO: this method can be used to draw the  upcoming geofence circle
@@ -387,7 +390,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         //enable the compass
         setHeading(true);
 
-        SKPolyline line = jsonParser.getRoute(1);
+        SKPolyline line = jsonParser.getRoute(i.getIntExtra("Route", 1));
         line.setIdentifier(1);
         line.setOutlineSize(4);
         mapView.addPolyline(line);

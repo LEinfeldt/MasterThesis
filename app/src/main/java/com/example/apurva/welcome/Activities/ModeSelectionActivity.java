@@ -51,7 +51,7 @@ public class ModeSelectionActivity extends AppCompatActivity  {
     }
 
     /**
-     * @desc open the map view when clicked on button
+     * open the map view when clicked on button
      */
     public void onMapClick(View v) {
 
@@ -63,23 +63,25 @@ public class ModeSelectionActivity extends AppCompatActivity  {
     }
 
     /**
-     * @desc open the map + ar view when clicked on button
+     * open the map + ar view when clicked on button
      */
     public void onMapArClick(View v) {
 
         Intent launchNextActivity;
-        launchNextActivity = new Intent(this, LaunchArActivity.class);
+        launchNextActivity = new Intent(this, SelectRouteActivity.class);
+        launchNextActivity.putExtra("Mode", "MapAR");
 
         launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(launchNextActivity);
     }
 
     /**
-     * @desc open the map + picture view when click on the button
+     * open the map + picture view when click on the button
      */
     public void onMapPictureClick(View v) {
         Intent launchNextActivity;
-        launchNextActivity = new Intent(this, LaunchPictureActivity.class);
+        launchNextActivity = new Intent(this, SelectRouteActivity.class);
+        launchNextActivity.putExtra("Mode", "MapPicture");
 
         launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(launchNextActivity);
