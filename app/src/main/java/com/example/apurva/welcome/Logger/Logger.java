@@ -29,7 +29,7 @@ public class Logger {
     private CSVWriter mWriter;
 
     private String mExperimentID = "default";
-    private String[] fileHeaderCombined = {"ID","event","log_timestamp", "original_lat", "original_lon", "layers"};
+    private String[] fileHeaderCombined = {"ID","Experiment", "event","log_timestamp", "original_lat", "original_lon", "layers"};
 
     private long mID = 0;
 
@@ -80,7 +80,7 @@ public class Logger {
         String originalLon = ""+mLastLocation.getLongitude();
 
 
-        String[] data = {idString, event, logTimestamp, originalLat, originalLon};
+        String[] data = {idString, mExperimentID, event, logTimestamp, originalLat, originalLon};
 
         mWriter.writeNext(data);
 
@@ -101,7 +101,7 @@ public class Logger {
         String lng = "";
         String activeLayer = layerAction;
 
-        String[] data = {idString, event, logTimeStamp, lat, lng, activeLayer};
+        String[] data = {idString, mExperimentID, event, logTimeStamp, lat, lng, activeLayer};
 
         mWriter.writeNext(data);
         mID++;

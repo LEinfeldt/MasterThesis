@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
+import com.skobbler.ngx.map.SKPolyline;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +14,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -20,6 +23,12 @@ import java.util.HashMap;
  */
 public class JsonParser {
     private byte[] routeBuffer;
+    private byte[] route1Buffer;
+    private byte[] route2Buffer;
+    private byte[] route3Buffer;
+    private byte[] route4Buffer;
+    private byte[] route5Buffer;
+
     private byte[] mapBuffer;
 
     public JsonParser(Context context) throws JSONException {
@@ -29,6 +38,51 @@ public class JsonParser {
             int size = is.available();
             routeBuffer = new byte[size];
             is.read(routeBuffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            is = context.getAssets().open("route1.geojson");
+            int size = is.available();
+            route1Buffer = new byte[size];
+            is.read(route1Buffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            is = context.getAssets().open("route2.geojson");
+            int size = is.available();
+            route2Buffer = new byte[size];
+            is.read(route2Buffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            is = context.getAssets().open("route3.geojson");
+            int size = is.available();
+            route3Buffer = new byte[size];
+            is.read(route3Buffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            is = context.getAssets().open("route4.geojson");
+            int size = is.available();
+            route4Buffer = new byte[size];
+            is.read(route4Buffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            is = context.getAssets().open("route5.geojson");
+            int size = is.available();
+            route5Buffer = new byte[size];
+            is.read(route5Buffer);
             is.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -143,6 +197,144 @@ public class JsonParser {
             throw new RuntimeException(e);
         }
         return latlnglist;
+    }
+
+    /**
+     * Get the coordinats of a route and return it as a SKPolyline
+     * @param route Number of the route that is considered
+     * @return Polyline of all route elements in the json file
+     */
+    public SKPolyline getRoute(int route) {
+        SKPolyline line = new SKPolyline();
+        JSONObject mJsonObject;
+        try {
+            //select the route
+            switch(route) {
+                case 1: mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
+                    break;
+                case 2: mJsonObject = new JSONObject(loadJSONFromAsset(route2Buffer));
+                    break;
+                case 3: mJsonObject = new JSONObject(loadJSONFromAsset(route3Buffer));
+                    break;
+                case 4: mJsonObject = new JSONObject(loadJSONFromAsset(route4Buffer));
+                    break;
+                case 5: mJsonObject = new JSONObject(loadJSONFromAsset(route5Buffer));
+                    break;
+                default: mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
+            }
+            JSONArray mJsonArray = mJsonObject.getJSONArray("features");
+            ArrayList<SKCoordinate> nodes = new ArrayList();
+
+            //get all the data from the json file
+            JSONObject jsonInside = mJsonArray.getJSONObject(0);
+            JSONObject current = jsonInside.getJSONObject("geometry");
+            //get the coordinates from the line
+            JSONArray coords = current.getJSONArray("coordinates");
+            for(int k = 0; k < coords.length(); k++) {
+                JSONArray item = coords.getJSONArray(k);
+                nodes.add(new SKCoordinate(item.getDouble(1), item.getDouble(0)));
+            }
+            line.setNodes(nodes);
+        }
+        catch(JSONException e) {
+                throw new RuntimeException(e);
+        }
+        return line;
+    }
+
+
+    /**
+     * Get the list of all decision points on the selected route
+     * @param route id of the route to be used
+     * @return Hashmap of all the DPs
+     */
+    public HashMap<String, SKCoordinate> getDecisionpoints(int route) {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        JSONObject mJsonObject;
+        try {
+            //select the route
+            switch(route) {
+                case 1: mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
+                    break;
+                case 2: mJsonObject = new JSONObject(loadJSONFromAsset(route2Buffer));
+                    break;
+                case 3: mJsonObject = new JSONObject(loadJSONFromAsset(route3Buffer));
+                    break;
+                case 4: mJsonObject = new JSONObject(loadJSONFromAsset(route4Buffer));
+                    break;
+                case 5: mJsonObject = new JSONObject(loadJSONFromAsset(route5Buffer));
+                    break;
+                default: mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
+            }
+
+            JSONArray mJsonArray = mJsonObject.getJSONArray("features");
+
+            //get all the data from the json file
+            for(int i = 1; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                JSONObject current = jsonInside.getJSONObject("geometry");
+                //decision points (without properties
+                if(!jsonInside.getJSONObject("properties").has("marker-color")) {
+                    JSONArray coords = current.getJSONArray("coordinates");
+                    double latitude = coords.getDouble(1);
+                    double longitude = coords.getDouble(0);
+                    SKCoordinate location = new SKCoordinate(latitude, longitude);
+                    latlnglist.put("" + i, location);
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+
+    }
+
+    /**
+     * Get all confirmation points on a selected route
+     * @param route The route to be used
+     * @return Hashmap of all CPs
+     */
+    public HashMap<String, SKCoordinate> getConfirmationpoints(int route) {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        JSONObject mJsonObject;
+        try {
+            //select the route
+            switch(route) {
+                case 1: mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
+                    break;
+                case 2: mJsonObject = new JSONObject(loadJSONFromAsset(route2Buffer));
+                    break;
+                case 3: mJsonObject = new JSONObject(loadJSONFromAsset(route3Buffer));
+                    break;
+                case 4: mJsonObject = new JSONObject(loadJSONFromAsset(route4Buffer));
+                    break;
+                case 5: mJsonObject = new JSONObject(loadJSONFromAsset(route5Buffer));
+                    break;
+                default: mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
+            }
+            JSONArray mJsonArray = mJsonObject.getJSONArray("features");
+
+            //get all the data from the json file
+            for(int i = 1; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                JSONObject current = jsonInside.getJSONObject("geometry");
+                //get the confirmation points (with properties)
+                if(jsonInside.getJSONObject("properties").has("marker-color")) {
+                    //do something with confirmation point
+                    JSONArray coords = current.getJSONArray("coordinates");
+                    double latitude = coords.getDouble(1);
+                    double longitude = coords.getDouble(0);
+                    SKCoordinate location = new SKCoordinate(latitude, longitude);
+                    latlnglist.put("" + i, location);
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+
     }
 
     /**

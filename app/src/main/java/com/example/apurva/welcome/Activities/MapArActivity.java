@@ -41,6 +41,7 @@ import com.skobbler.ngx.map.SKMapSurfaceListener;
 import com.skobbler.ngx.map.SKMapSurfaceView;
 import com.skobbler.ngx.map.SKMapViewHolder;
 import com.skobbler.ngx.map.SKPOICluster;
+import com.skobbler.ngx.map.SKPolyline;
 import com.skobbler.ngx.map.SKScreenPoint;
 import com.skobbler.ngx.navigation.SKNavigationListener;
 import com.skobbler.ngx.navigation.SKNavigationManager;
@@ -130,6 +131,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         sensorUpdate = new SensorUpdate(this);
         //registering the sensor update listener
         sensorUpdate.setListener(this);
+
         //initialize the logger
         this.logger = new Logger();
         try {
@@ -384,6 +386,12 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
        // drawCircle();
         //enable the compass
         setHeading(true);
+
+        SKPolyline line = jsonParser.getRoute(1);
+        line.setIdentifier(1);
+        line.setOutlineSize(4);
+        mapView.addPolyline(line);
+        Log.i("Addded map", "with route");
     }
 
     private void applysettings() {
