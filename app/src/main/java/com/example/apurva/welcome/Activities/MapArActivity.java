@@ -394,7 +394,6 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         line.setIdentifier(1);
         line.setOutlineSize(4);
         mapView.addPolyline(line);
-        Log.i("Addded map", "with route");
     }
 
     private void applysettings() {

@@ -42,6 +42,7 @@ import com.skobbler.ngx.map.SKMapSurfaceListener;
 import com.skobbler.ngx.map.SKMapSurfaceView;
 import com.skobbler.ngx.map.SKMapViewHolder;
 import com.skobbler.ngx.map.SKPOICluster;
+import com.skobbler.ngx.map.SKPolyline;
 import com.skobbler.ngx.map.SKScreenPoint;
 import com.skobbler.ngx.navigation.SKNavigationListener;
 import com.skobbler.ngx.navigation.SKNavigationManager;
@@ -66,6 +67,8 @@ import static com.example.apurva.welcome.R.drawable.img0;
 
 public class MapPictureActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
 
+    //Intent to get the extra information
+    Intent i;
     //Holder to hold the mapView.
     private SKMapViewHolder mapHolder;
     //receiver to receive the output of Geocoding
@@ -110,6 +113,8 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         mapHolder.setMapSurfaceListener(this);
         //drawCircle();//TODO: this method can be used to draw the  upcoming geofence circle
 
+        //get the intent
+        i = getIntent();
         //get the image holder
         image = (ImageView) findViewById(R.id.image_holder);
         mResultReceiver = new AddressResultReceiver(null);
@@ -280,6 +285,12 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         // drawCircle();
         //enable the compass
         setHeading(true);
+
+        //add the polyline for the route
+        SKPolyline line = jsonParser.getRoute(i.getIntExtra("Route", 1));
+        line.setIdentifier(1);
+        line.setOutlineSize(4);
+        mapView.addPolyline(line);
     }
 
     private void applysettings() {

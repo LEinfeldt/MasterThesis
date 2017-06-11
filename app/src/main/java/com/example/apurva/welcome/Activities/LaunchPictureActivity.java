@@ -16,11 +16,13 @@ import com.skobbler.ngx.SKMapsInitializationListener;
 
 public class LaunchPictureActivity extends AppCompatActivity implements SKMapsInitializationListener{
 
+    private Intent i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
+        i = getIntent();
 
         //Initializing SKMaps
         try {
@@ -43,9 +45,12 @@ public class LaunchPictureActivity extends AppCompatActivity implements SKMapsIn
     }
 
     public void goToMap() {
+        //get the extra from the intent
+        int extra = i.getIntExtra("Route", 1);
         //launching MapPictureActivity and clearing this one so that on back pressed this is not displayed
         Intent launchNextActivity;
         launchNextActivity = new Intent(this, MapPictureActivity.class);
+        launchNextActivity.putExtra("Route", extra);
         launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(launchNextActivity);
     }
