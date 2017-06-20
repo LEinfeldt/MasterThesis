@@ -1,34 +1,34 @@
 package com.example.apurva.welcome.Activities;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.apurva.welcome.DecisionPoints.GeofenceTransitionsIntentService;
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
+import com.example.apurva.welcome.DecisionPoints.ServiceCallbacks;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
 import com.example.apurva.welcome.Geocoding.Constants;
-import com.example.apurva.welcome.Geocoding.FetchLocationIntentService;
+import com.example.apurva.welcome.Logger.Logger;
 import com.example.apurva.welcome.R;
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
 import com.skobbler.ngx.map.SKAnimationSettings;
@@ -58,15 +58,23 @@ import com.skobbler.ngx.routing.SKRouteSettings;
 import org.json.JSONException;
 
 import java.util.Map;
-
-import static com.example.apurva.welcome.R.drawable.img0;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by lasse on 27.04.2017.
  */
 
-public class MapPictureActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
+public class MapPictureActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener, ServiceCallbacks {
 
+    private Intent mIntent;
+    private PendingIntent mGeofencePendingIntent;
+    private int routeNumber;
+    private int imagecounter;
+    private GeofenceTransitionsIntentService geoService;
+    private boolean bound = false;
+    private Timer timer;
+    private Logger logger;
     //Intent to get the extra information
     Intent i;
     //Holder to hold the mapView.
@@ -122,17 +130,42 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         sensorUpdate = new SensorUpdate(this);
         //registering the sensor update listener
         sensorUpdate.setListener(this);
+        imagecounter = 0;
+        routeNumber = i.getIntExtra("Route", 1);
+
+        //initialize the logger
+        this.logger = new Logger();
+        try {
+            logger.setupLogging("Map + Picture", this);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        //setup the json Parser
         try {
             jsonParser = new JsonParser(this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        mIntent =  new Intent(this, GeofenceTransitionsIntentService.class);
+        mIntent.putExtra("mode", "picture");
+
         try {
-            geofencing = new Geofencing(this);
+            geofencing = new Geofencing(this, i.getIntExtra("Route", 1), "picture", mIntent);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        //setup the regular logging
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //log the current position
+                logger.logLocation(mLocation.currentPosition.getCoordinate());
+            }
+        }, 0, 1000);
     }
 
     private void setHeading(boolean enabled) {
@@ -199,13 +232,96 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         }
     }
 
+    @Override
+    public void setImagecounter(int number) {
+        imagecounter = number;
+    }
+
+    @Override
+    public int getImagecounter() {
+        return imagecounter;
+    }
+
     /**
-     * Update the iamge in the image view when a new decision point is reached
+     * Get the images changable --> geofences work finally
      */
+
+
+    /**
+     * Update the image in the image view when a new decision point is reached
+     */
+    @Override
     public void updateImage() {
-        //TODO: find out how to get through a row of images to use the next
-        int next = R.drawable.img0;
-        image.setImageResource(next);
+        Log.i("UpdateImage", "In the method");
+        if(routeNumber == 1) {
+            //count the images in the first route
+            if(imagecounter < 4) {
+                //view is only touchable from ui thread
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //get the new image
+                        Log.i("Image update", "In the method " + getImagecounter());
+                        String generatedString = "route1img" + getImagecounter();
+                        setImagecounter(getImagecounter() + 1);
+                        Resources res = getResources();
+                        int resourceId = res.getIdentifier(
+                                generatedString, "drawable", getPackageName() );
+                        image.setImageResource(resourceId);
+                    }
+                });
+            }
+        }
+        if(routeNumber == 2) {
+            //count the images in the first route
+            if(imagecounter < 5) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //get the new image
+                        String generatedString = "route2img" + ++imagecounter;
+                        Resources res = getResources();
+                        int resourceId = res.getIdentifier(
+                                generatedString, "drawable", getPackageName() );
+                        image.setImageResource(resourceId);
+                    }
+                });
+
+            }
+        }
+        if(routeNumber == 3) {
+            //count the images in the first route
+            if(imagecounter < 5) {
+                //get the new image
+                String generatedString = "route3img" + ++imagecounter;
+                Resources res = getResources();
+                int resourceId = res.getIdentifier(
+                        generatedString, "drawable", getPackageName() );
+                image.setImageResource(resourceId);
+            }
+        }
+        if(routeNumber == 4) {
+            //count the images in the first route
+            if(imagecounter < 10) {
+                //get the new image
+                String generatedString = "route4img" + ++imagecounter;
+                Resources res = getResources();
+                int resourceId = res.getIdentifier(
+                        generatedString, "drawable", getPackageName() );
+                image.setImageResource(resourceId);
+            }
+        }
+        if(routeNumber == 5) {
+            //count the images in the first route
+            if(imagecounter < 8) {
+                //get the new image
+                String generatedString = "route5img" + ++imagecounter;
+                Resources res = getResources();
+                int resourceId = res.getIdentifier(
+                        generatedString, "drawable", getPackageName() );
+                image.setImageResource(resourceId);
+            }
+        }
     }
 
 
@@ -240,14 +356,42 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     @Override
     protected void onStart(){
         super.onStart();
+        mGeofencePendingIntent = PendingIntent.getService(getApplicationContext(), 0, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Log.i("Activity", "Bind: " + mGeofencePendingIntent);
         geofencing.apiConnect();
+        bindService(mIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop(){
         super.onStop();
         geofencing.apiDisconnect();
+        if(bound) {
+            geoService.setCallbacks(null); //unregister service
+            unbindService(serviceConnection);
+            bound = false;
+        }
     }
+
+    /** Callbacks for service binding, passed to bindService() */
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // cast the IBinder and get geoService instance
+            GeofenceTransitionsIntentService.LocalBinder binder = (GeofenceTransitionsIntentService.LocalBinder) service;
+            geoService = binder.getService();
+            Log.i("ServiceConnection", "In new Connection " + geoService);
+            bound = true;
+            Log.i("Activity", "VALUE of this instance: " + MapPictureActivity.this);
+            geoService.setCallbacks(MapPictureActivity.this); // register
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            bound = false;
+        }
+    };
 
     @Override
     protected void onPause() {
@@ -291,6 +435,8 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         line.setIdentifier(1);
         line.setOutlineSize(4);
         mapView.addPolyline(line);
+        //log the selected route to file
+        logger.logRouteInformation(i.getIntExtra("Route", 1));
     }
 
     private void applysettings() {

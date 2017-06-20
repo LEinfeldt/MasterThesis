@@ -151,7 +151,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         }
 
         try {
-            geofencing = new Geofencing(this);
+            geofencing = new Geofencing(this, i.getIntExtra("Route", 1), "AR");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -394,6 +394,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         line.setIdentifier(1);
         line.setOutlineSize(4);
         mapView.addPolyline(line);
+        logger.logRouteInformation(i.getIntExtra("Route", 1));
     }
 
     private void applysettings() {

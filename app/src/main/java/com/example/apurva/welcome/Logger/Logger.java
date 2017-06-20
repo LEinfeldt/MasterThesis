@@ -29,7 +29,7 @@ public class Logger {
     private CSVWriter mWriter;
 
     private String mExperimentID = "default";
-    private String[] fileHeaderCombined = {"ID","Experiment", "event","log_timestamp", "original_lat", "original_lon", "layers"};
+    private String[] fileHeaderCombined = {"ID","Experiment", "event","log_timestamp", "original_lat", "original_lon", "layers", "route"};
 
     private long mID = 0;
 
@@ -59,7 +59,6 @@ public class Logger {
             mWriter = new CSVWriter(new FileWriter(mFilePath));
             mWriter.writeNext(fileHeaderCombined);
         }
-        Log.i("THIS THE", "NEW WriTEr:" + mWriter);
     }
 
     private void loadLogfileSettingsFromSharedPrefs() {
@@ -78,9 +77,11 @@ public class Logger {
         String logTimestamp = dateFormat.format(System.currentTimeMillis());
         String originalLat = ""+mLastLocation.getLatitude();
         String originalLon = ""+mLastLocation.getLongitude();
+        String activeLayer = "-";
+        String routeAction = "-";
 
 
-        String[] data = {idString, mExperimentID, event, logTimestamp, originalLat, originalLon};
+        String[] data = {idString, mExperimentID, event, logTimestamp, originalLat, originalLon, activeLayer, routeAction};
 
         mWriter.writeNext(data);
 
@@ -97,11 +98,34 @@ public class Logger {
         String idString = "" + mID;
         String event = "Layers changed";
         String logTimeStamp = dateFormat.format(System.currentTimeMillis());
-        String lat = "";
-        String lng = "";
+        String lat = "-";
+        String lng = "-";
         String activeLayer = layerAction;
+        String routeAction = "-";
 
-        String[] data = {idString, mExperimentID, event, logTimeStamp, lat, lng, activeLayer};
+        String[] data = {idString, mExperimentID, event, logTimeStamp, lat, lng, activeLayer, routeAction};
+
+        mWriter.writeNext(data);
+        mID++;
+    }
+
+    /**
+     * Add the selected route to the logger
+     * @param route Number of the route, that was selected
+     */
+    public void logRouteInformation(int route) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM-dd HH:mm:ss");
+
+        String idString = "" + mID;
+        String event = "Selected Route";
+        String logTimeStamp = dateFormat.format(System.currentTimeMillis());
+        String lat = "-";
+        String lng = "-";
+        String activeLayer = "-";
+        String routeAction = "No. " + route;
+
+        String[] data = {idString, mExperimentID, event, logTimeStamp, lat, lng, activeLayer, routeAction};
 
         mWriter.writeNext(data);
         mID++;

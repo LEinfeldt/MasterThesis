@@ -248,8 +248,8 @@ public class JsonParser {
      * @param route id of the route to be used
      * @return Hashmap of all the DPs
      */
-    public HashMap<String, SKCoordinate> getDecisionpoints(int route) {
-        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+    public HashMap<String, LatLng> getDecisionpoints(int route) {
+        HashMap<String, LatLng> latlnglist = new HashMap<>();
         JSONObject mJsonObject;
         try {
             //select the route
@@ -278,7 +278,7 @@ public class JsonParser {
                     JSONArray coords = current.getJSONArray("coordinates");
                     double latitude = coords.getDouble(1);
                     double longitude = coords.getDouble(0);
-                    SKCoordinate location = new SKCoordinate(latitude, longitude);
+                    LatLng location = new LatLng(latitude, longitude);
                     latlnglist.put("" + i, location);
                 }
             }
