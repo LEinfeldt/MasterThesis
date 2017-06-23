@@ -75,6 +75,7 @@ if AR View is enabled
  */
 public class MapArActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
 
+    private Button startNav;
     //drawer item
     private DrawerLayout mDrawerLayout;
     //list of items in the drawer
@@ -192,15 +193,11 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
             e.printStackTrace();
         }
 
-        //setup the regular logging
+        //setup timer
         timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //log the current position
-                logger.logLocation(mLocation.currentPosition.getCoordinate());
-            }
-        }, 0, 1000);
+
+        //get the button to start navigation
+        startNav = (Button) findViewById(R.id.startNavigationMapAR);
 
         //Map/Map+AR View Switch
         aSwitch = (Switch) findViewById(R.id.switchAR);
@@ -241,6 +238,27 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
                                            }
                                        }
         );
+    }
+
+    public void startNavigation(View v) {
+
+        //Start logging from now on
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //log the current position
+                logger.logLocation(mLocation.currentPosition.getCoordinate());
+            }
+        }, 0, 1000*60);
+
+        //display the route to be walked
+        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
+        line.setIdentifier(1);
+        line.setOutlineSize(4);
+        mapView.addPolyline(line);
+        //log the selected route to file
+        logger.logRouteInformation(intent.getIntExtra("Route", 1));
+        startNav.setVisibility(View.INVISIBLE);
     }
 
     private void setHeading(boolean enabled) {
@@ -426,12 +444,6 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         //enable the compass
         setHeading(true);
         layerInteraction.addDataToMap(mapView);
-
-        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
-        line.setIdentifier(1);
-        line.setOutlineSize(4);
-        mapView.addPolyline(line);
-        logger.logRouteInformation(intent.getIntExtra("Route", 1));
     }
 
     private void applysettings() {

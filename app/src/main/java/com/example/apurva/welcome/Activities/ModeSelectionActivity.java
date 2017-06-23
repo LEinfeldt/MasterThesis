@@ -56,7 +56,8 @@ public class ModeSelectionActivity extends AppCompatActivity  {
     public void onMapClick(View v) {
 
         Intent launchNextActivity;
-        launchNextActivity = new Intent(this, LaunchMapActivity.class);
+        launchNextActivity = new Intent(this, SelectRouteActivity.class);
+        launchNextActivity.putExtra("Mode", "Map");
 
         launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(launchNextActivity);

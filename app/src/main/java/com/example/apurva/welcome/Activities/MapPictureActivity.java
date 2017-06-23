@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -67,6 +68,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.R.attr.id;
+
 /**
  * Created by lasse on 27.04.2017.
  * All code snippets for the calculation of navication are commented but not deleted (also imports)
@@ -74,6 +77,7 @@ import java.util.TimerTask;
 
 public class MapPictureActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener, ServiceCallbacks {
 
+    private Button startNav;
     private LayerInteraction layerInteraction;
     private Intent mIntent;
     private PendingIntent mGeofencePendingIntent;
@@ -135,6 +139,9 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         mapHolder.setMapSurfaceListener(this);
         //drawCircle();//TODO: this method can be used to draw the  upcoming geofence circle
 
+        //get the button to start navigation
+        startNav = (Button) findViewById(R.id.startNavigationMapPicture);
+
         //Initialize the drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layoutPicture);
         //Initialize the drawer list
@@ -192,15 +199,29 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
             e.printStackTrace();
         }
 
-        //setup the regular logging
+        //setup timer
         timer = new Timer();
+    }
+
+    public void startNavigation(View v) {
+
+        //Start logging from now on
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 //log the current position
                 logger.logLocation(mLocation.currentPosition.getCoordinate());
             }
-        }, 0, 1000);
+        }, 0, 1000*60);
+
+        //display the route to be walked
+        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
+        line.setIdentifier(1);
+        line.setOutlineSize(4);
+        mapView.addPolyline(line);
+        //log the selected route to file
+        logger.logRouteInformation(intent.getIntExtra("Route", 1));
+        startNav.setVisibility(View.INVISIBLE);
     }
 
     private void setHeading(boolean enabled) {
@@ -469,14 +490,6 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         //enable the compass
         setHeading(true);
         layerInteraction.addDataToMap(mapView);
-
-        //add the polyline for the route
-        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
-        line.setIdentifier(1);
-        line.setOutlineSize(4);
-        mapView.addPolyline(line);
-        //log the selected route to file
-        logger.logRouteInformation(intent.getIntExtra("Route", 1));
     }
 
     private void applysettings() {

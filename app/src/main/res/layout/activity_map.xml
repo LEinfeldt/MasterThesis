@@ -28,6 +28,15 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_navigation"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/locateButtonMap"
+            android:id="@+id/startNavigationMap"
+            android:onClick="startNavigation"/>
+
     </RelativeLayout>
 
     <!-- Layout for the navigation drawer -->

@@ -42,6 +42,12 @@ public class SelectRouteActivity extends AppCompatActivity{
             launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(launchNextActivity);
         }
+        else if(mode.contentEquals("Map")) {
+            launchNextActivity = new Intent(this, LaunchMapActivity.class);
+            launchNextActivity.putExtra("Route", 1);
+            launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(launchNextActivity);
+        }
     }
 
     public void onRoute2Click(View view) {
@@ -61,6 +67,12 @@ public class SelectRouteActivity extends AppCompatActivity{
             launchNextActivity = new Intent(this, LaunchPictureActivity.class);
             launchNextActivity.putExtra("Route", 2);
 
+            launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(launchNextActivity);
+        }
+        else if(mode.contentEquals("Map")) {
+            launchNextActivity = new Intent(this, LaunchMapActivity.class);
+            launchNextActivity.putExtra("Route", 2);
             launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(launchNextActivity);
         }
@@ -86,6 +98,12 @@ public class SelectRouteActivity extends AppCompatActivity{
             launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(launchNextActivity);
         }
+        else if(mode.contentEquals("Map")) {
+            launchNextActivity = new Intent(this, LaunchMapActivity.class);
+            launchNextActivity.putExtra("Route", 3);
+            launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(launchNextActivity);
+        }
     }
 
     public void onRoute4Click(View view) {
@@ -108,6 +126,12 @@ public class SelectRouteActivity extends AppCompatActivity{
             launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(launchNextActivity);
         }
+        else if(mode.contentEquals("Map")) {
+            launchNextActivity = new Intent(this, LaunchMapActivity.class);
+            launchNextActivity.putExtra("Route", 4);
+            launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(launchNextActivity);
+        }
     }
 
     public void onRoute5Click(View view) {
@@ -127,6 +151,12 @@ public class SelectRouteActivity extends AppCompatActivity{
             launchNextActivity = new Intent(this, LaunchPictureActivity.class);
             launchNextActivity.putExtra("Route", 5);
 
+            launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(launchNextActivity);
+        }
+        else if(mode.contentEquals("Map")) {
+            launchNextActivity = new Intent(this, LaunchMapActivity.class);
+            launchNextActivity.putExtra("Route", 5);
             launchNextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(launchNextActivity);
         }

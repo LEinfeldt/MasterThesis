@@ -1,6 +1,7 @@
 package com.example.apurva.welcome.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -41,6 +43,7 @@ import com.skobbler.ngx.map.SKMapSurfaceListener;
 import com.skobbler.ngx.map.SKMapSurfaceView;
 import com.skobbler.ngx.map.SKMapViewHolder;
 import com.skobbler.ngx.map.SKPOICluster;
+import com.skobbler.ngx.map.SKPolyline;
 import com.skobbler.ngx.map.SKScreenPoint;
 import com.skobbler.ngx.navigation.SKNavigationListener;
 import com.skobbler.ngx.navigation.SKNavigationManager;
@@ -65,6 +68,9 @@ import java.util.TimerTask;
 
 public class MapActivity extends AppCompatActivity implements SKMapSurfaceListener, SensorUpdate.AccelMagnoListener {
 
+    private Button startNav;
+    //intent
+    private Intent intent;
     //logger
     private Logger logger;
     //Timer for regular logs
@@ -128,6 +134,11 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
 
         layerInteraction = new LayerInteraction(this);
 
+        intent = getIntent();
+
+        //get the button to start navigation
+        startNav = (Button) findViewById(R.id.startNavigationMap);
+
         sensorUpdate = new SensorUpdate(this);
         //registering the sensor update listener
         sensorUpdate.setListener(this);
@@ -155,15 +166,8 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
             }
         });
 
-        //setup the regular logging
+        //setup timer
         timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //log the current position
-                logger.logLocation(mLocation.currentPosition.getCoordinate());
-            }
-        }, 0, 1000);
 
         //Position Me Button
         locateButtonMap = (ImageButton) findViewById(R.id.locateButtonMap);
@@ -184,6 +188,27 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
                                              }
                                          }
         );
+    }
+
+    public void startNavigation(View v) {
+
+        //Start logging from now on
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //log the current position
+                logger.logLocation(mLocation.currentPosition.getCoordinate());
+            }
+        }, 0, 1000*60);
+
+        //display the route to be walked
+        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
+        line.setIdentifier(1);
+        line.setOutlineSize(4);
+        mapView.addPolyline(line);
+        //log the selected route to file
+        logger.logRouteInformation(intent.getIntExtra("Route", 1));
+        startNav.setVisibility(View.INVISIBLE);
     }
 
     private void setHeading(boolean enabled) {

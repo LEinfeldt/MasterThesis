@@ -23,9 +23,16 @@
             android:id="@+id/locateButtonAR"
             android:src="@mipmap/ic_my_location"
             android:contentDescription="@string/current_position"
-
             android:layout_alignBottom="@+id/view_group_mapAR"
             android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_navigation"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/startNavigationMapAR"
+            android:onClick="startNavigation"/>
 
 
        <Switch
