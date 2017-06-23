@@ -140,7 +140,6 @@ public class LayerInteraction {
                 }
                 annotation.setAnnotationView(annotationView);
                 supermarkets[k] = annotation;
-                Log.i("Supermarket" + k, "wert ist:" + supermarkets[k]);
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
                 k++;

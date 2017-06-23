@@ -278,7 +278,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     }
 
     /**
-     * Get the images changable --> geofences work finally
+     * Test the method for multiple geofences
      */
 
 
@@ -289,8 +289,10 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     public void updateImage() {
         Log.i("UpdateImage", "In the method");
         if(routeNumber == 1) {
+            Log.i("UpdateImage", "In der Route1 if");
             //count the images in the first route
             if(imagecounter < 4) {
+                Log.i("UpdateImage", "In the imagecounter if " + imagecounter);
                 //view is only touchable from ui thread
                 runOnUiThread(new Runnable() {
                     @Override
@@ -301,8 +303,10 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
                         Log.i("Image update", "Generated String: " + generatedString);
                         setImagecounter(getImagecounter() + 1);
                         Resources res = getResources();
+                        Log.i("UpdateImage", "Resources: " + res);
                         int resourceId = res.getIdentifier(
                                 "drawable/" + generatedString, null, getPackageName() );
+                        Log.i("UpdateImage", "Id: " + resourceId);
                         image.setImageResource(resourceId);
                     }
                 });
@@ -417,9 +421,8 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
             // cast the IBinder and get geoService instance
             GeofenceTransitionsIntentService.LocalBinder binder = (GeofenceTransitionsIntentService.LocalBinder) service;
             geoService = binder.getService();
-            Log.i("ServiceConnection", "In new Connection " + geoService);
+            Log.i("ServiceConnection", "In new Connection");
             bound = true;
-            Log.i("Activity", "VALUE of this instance: " + MapPictureActivity.this);
             geoService.setCallbacks(MapPictureActivity.this); // register
         }
 
