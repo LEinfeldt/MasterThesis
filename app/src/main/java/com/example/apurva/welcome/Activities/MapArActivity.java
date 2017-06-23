@@ -1,6 +1,7 @@
 package com.example.apurva.welcome.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.SensorManager;
@@ -8,20 +9,26 @@ import android.location.Address;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
+import com.example.apurva.welcome.DecisionPoints.LayerInteraction;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
 import com.example.apurva.welcome.Geocoding.Constants;
@@ -32,6 +39,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
 import com.skobbler.ngx.map.SKAnimationSettings;
 import com.skobbler.ngx.map.SKAnnotation;
+import com.skobbler.ngx.map.SKAnnotationView;
 import com.skobbler.ngx.map.SKCircle;
 import com.skobbler.ngx.map.SKCoordinateRegion;
 import com.skobbler.ngx.map.SKMapCustomPOI;
@@ -67,8 +75,14 @@ if AR View is enabled
  */
 public class MapArActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
 
+    //drawer item
+    private DrawerLayout mDrawerLayout;
+    //list of items in the drawer
+    private ListView mDrawerList;
+    //String array with the names of the layers
+    private String[] layerNames;
     //get the intent
-    Intent i;
+    Intent intent;
     //logger instance
     private Logger logger;
     //timer for the logger
@@ -78,19 +92,19 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
     //PositionMe Button
     private ImageButton locateButtonAR;
     //receiver to receive the output of Geocoding
-    private AddressResultReceiver mResultReceiver;
+    //private AddressResultReceiver mResultReceiver;
     //Edit Text widgets to edit the origin and destination addresses
-    private EditText originAddress;
-    private EditText destinationAddress;
+    //private EditText originAddress;
+    //private EditText destinationAddress;
     //resulted coordinates for the origin and destination points
-    private SKCoordinate originPoint;
-    private SKCoordinate destinationPoint;
+    //private SKCoordinate originPoint;
+    //private SKCoordinate destinationPoint;
     //Tag for printing Logs
     private static final String TAG = "MapArActivity";
     //Progress bar during the time of addresses search
-    private ProgressBar progressBarAR;
+    //private ProgressBar progressBarAR;
     //Button for calculateroute, start navigation and stop navigation
-    private Button startButton;
+    //private Button startButton;
     //to determine if navigation is in process.
     private boolean navigationInProgress = false;
     //Switch between MapView and Map+AR View
@@ -104,6 +118,8 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
     private Geofencing geofencing;
     private SensorUpdate sensorUpdate;
     private JsonParser jsonParser;
+    private LayerInteraction layerInteraction;
+
     //sensor value of accelerometer
     private float[] accelValue = new float[3];
     //initial compass value
@@ -121,19 +137,30 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_mapar);
         //Initializing Objects
-        i = getIntent();
+        intent = getIntent();
         mapHolder = (SKMapViewHolder) findViewById(R.id.view_group_mapAR);
         mapHolder.setMapSurfaceListener(this);
         //drawCircle();//TODO: this method can be used to draw the  upcoming geofence circle
-        mResultReceiver = new AddressResultReceiver(null);
-        progressBarAR = (ProgressBar) findViewById(R.id.progressBarAR);
+        //mResultReceiver = new AddressResultReceiver(null);
+        /*progressBarAR = (ProgressBar) findViewById(R.id.progressBarAR);
         destinationAddress = (EditText) findViewById(R.id.destinationAR);
         originAddress = (EditText) findViewById(R.id.originAR);
-        startButton = (Button) findViewById(R.id.buttonAR);
+        startButton = (Button) findViewById(R.id.buttonAR);*/
+
+        //Initialize the drawer
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layoutAR);
+        //Initialize the drawer list
+        mDrawerList = (ListView) findViewById(R.id.left_drawer_mapAR);
+        //get the Strings from resources
+        layerNames = getResources().getStringArray(R.array.layerNames);
+        //set an adapter for the drawer list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, R.id.txtTitle, layerNames));
+
         mLocation = new LocationUpdate(this);
         sensorUpdate = new SensorUpdate(this);
         //registering the sensor update listener
         sensorUpdate.setListener(this);
+        layerInteraction = new LayerInteraction(this);
 
         //initialize the logger
         this.logger = new Logger();
@@ -144,6 +171,15 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
             e.printStackTrace();
         }
 
+        // set a listener to the list
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //toggle the visibility of the selected layer
+                layerInteraction.toggleDataLayer(position, mapView, logger);
+            }
+        });
+
         try {
             jsonParser = new JsonParser(this);
         } catch (JSONException e) {
@@ -151,7 +187,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         }
 
         try {
-            geofencing = new Geofencing(this, i.getIntExtra("Route", 1), "AR");
+            geofencing = new Geofencing(this, intent.getIntExtra("Route", 1), "AR");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -223,7 +259,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         }
     }
 
-    public void onButtonClicked(View view) {
+    /*public void onButtonClicked(View view) {
         //If the central button is clicked while the text reads calculate route
         if(startButton.getText().equals(getResources().getString(R.string.calculate_route))) {
 
@@ -291,7 +327,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
     private void stopNavigation(){
         navigationInProgress = false;
         SKNavigationManager.getInstance().stopNavigation();
-    }
+    }*/
 
     private void drawCircle(){
         //TODO: to use it to draw the geofence.
@@ -389,12 +425,13 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
        // drawCircle();
         //enable the compass
         setHeading(true);
+        layerInteraction.addDataToMap(mapView);
 
-        SKPolyline line = jsonParser.getRoute(i.getIntExtra("Route", 1));
+        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
         line.setIdentifier(1);
         line.setOutlineSize(4);
         mapView.addPolyline(line);
-        logger.logRouteInformation(i.getIntExtra("Route", 1));
+        logger.logRouteInformation(intent.getIntExtra("Route", 1));
     }
 
     private void applysettings() {
@@ -556,7 +593,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         SKRouteManager.getInstance().setCurrentRouteByUniqueId(skRouteInfo.getRouteID());
         // zoom to the current route
         SKRouteManager.getInstance().zoomToRoute(1, 1, 8, 8, 8, 8, 0);
-        startButton.setText(getResources().getString(R.string.start_navigation));
+        //startButton.setText(getResources().getString(R.string.start_navigation));
 
     }
 
@@ -584,7 +621,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
     public void onDestinationReached() {
         Toast.makeText(MapArActivity.this, R.string.destination_reached, Toast.LENGTH_SHORT).show();
         // clear the map when reaching destination
-        clearMap();
+        //clearMap();
     }
 
     @Override
@@ -684,12 +721,12 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         }
         return currentCompassValue;
     }*/
-
+/*
     @SuppressLint("ParcelCreator")
     class AddressResultReceiver extends ResultReceiver {
-        /*
-        private class the handle the results of the geocoding
-         */
+
+        //private class the handle the results of the geocoding
+
         public AddressResultReceiver(Handler handler) {
             super(handler);
         }
@@ -736,5 +773,5 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
             }
         }
 
-    }
+    }*/
 }

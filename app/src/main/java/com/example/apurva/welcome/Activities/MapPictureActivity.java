@@ -1,6 +1,6 @@
 package com.example.apurva.welcome.Activities;
 
-import android.annotation.SuppressLint;
+//import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,20 +9,26 @@ import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.hardware.SensorManager;
-import android.location.Address;
+//import android.location.Address;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.ResultReceiver;
+//import android.os.ResultReceiver;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.apurva.welcome.DecisionPoints.GeofenceTransitionsIntentService;
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
+import com.example.apurva.welcome.DecisionPoints.LayerInteraction;
 import com.example.apurva.welcome.DecisionPoints.ServiceCallbacks;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
@@ -45,15 +51,15 @@ import com.skobbler.ngx.map.SKPOICluster;
 import com.skobbler.ngx.map.SKPolyline;
 import com.skobbler.ngx.map.SKScreenPoint;
 import com.skobbler.ngx.navigation.SKNavigationListener;
-import com.skobbler.ngx.navigation.SKNavigationManager;
-import com.skobbler.ngx.navigation.SKNavigationSettings;
+//import com.skobbler.ngx.navigation.SKNavigationManager;
+//import com.skobbler.ngx.navigation.SKNavigationSettings;
 import com.skobbler.ngx.navigation.SKNavigationState;
 import com.skobbler.ngx.positioner.SKPositionerManager;
 import com.skobbler.ngx.routing.SKRouteInfo;
 import com.skobbler.ngx.routing.SKRouteJsonAnswer;
 import com.skobbler.ngx.routing.SKRouteListener;
 import com.skobbler.ngx.routing.SKRouteManager;
-import com.skobbler.ngx.routing.SKRouteSettings;
+//import com.skobbler.ngx.routing.SKRouteSettings;
 
 import org.json.JSONException;
 
@@ -63,10 +69,12 @@ import java.util.TimerTask;
 
 /**
  * Created by lasse on 27.04.2017.
+ * All code snippets for the calculation of navication are commented but not deleted (also imports)
  */
 
 public class MapPictureActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener, ServiceCallbacks {
 
+    private LayerInteraction layerInteraction;
     private Intent mIntent;
     private PendingIntent mGeofencePendingIntent;
     private int routeNumber;
@@ -75,12 +83,18 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     private boolean bound = false;
     private Timer timer;
     private Logger logger;
+    //drawer item
+    private DrawerLayout mDrawerLayout;
+    //list of items in the drawer
+    private ListView mDrawerList;
+    //String array with the names of the layers
+    private String[] layerNames;
     //Intent to get the extra information
-    Intent i;
+    Intent intent;
     //Holder to hold the mapView.
     private SKMapViewHolder mapHolder;
     //receiver to receive the output of Geocoding
-    private AddressResultReceiver mResultReceiver;
+    //private AddressResultReceiver mResultReceiver;
     //resulted coordinates for the origin and destination points
     private SKCoordinate originPoint;
     private SKCoordinate destinationPoint;
@@ -121,17 +135,28 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         mapHolder.setMapSurfaceListener(this);
         //drawCircle();//TODO: this method can be used to draw the  upcoming geofence circle
 
+        //Initialize the drawer
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layoutPicture);
+        //Initialize the drawer list
+        mDrawerList = (ListView) findViewById(R.id.left_drawer_mapPicture);
+        //get the Strings from resources
+        layerNames = getResources().getStringArray(R.array.layerNames);
+        //set an adapter for the drawer list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, R.id.txtTitle, layerNames));
+
+        layerInteraction = new LayerInteraction(this);
+
         //get the intent
-        i = getIntent();
+        intent = getIntent();
         //get the image holder
         image = (ImageView) findViewById(R.id.image_holder);
-        mResultReceiver = new AddressResultReceiver(null);
+        //mResultReceiver = new AddressResultReceiver(null);
         mLocation = new LocationUpdate(this);
         sensorUpdate = new SensorUpdate(this);
         //registering the sensor update listener
         sensorUpdate.setListener(this);
         imagecounter = 0;
-        routeNumber = i.getIntExtra("Route", 1);
+        routeNumber = intent.getIntExtra("Route", 1);
 
         //initialize the logger
         this.logger = new Logger();
@@ -141,6 +166,16 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         catch(Exception e) {
             e.printStackTrace();
         }
+
+        // set a listener to the list
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //toggle the visibility of the selected layer
+                layerInteraction.toggleDataLayer(position, mapView, logger);
+            }
+        });
+
         //setup the json Parser
         try {
             jsonParser = new JsonParser(this);
@@ -152,7 +187,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         mIntent.putExtra("mode", "picture");
 
         try {
-            geofencing = new Geofencing(this, i.getIntExtra("Route", 1), "picture", mIntent);
+            geofencing = new Geofencing(this, intent.getIntExtra("Route", 1), "picture", mIntent);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -184,7 +219,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         }
     }
 
-    private void launchNavigation() {
+    /*private void launchNavigation() {
 
         SKNavigationSettings navigationSettings = new SKNavigationSettings();
         // set the desired navigation settings
@@ -203,21 +238,21 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         //set navigation in process = true;
         navigationInProgress = true;
 
-    }
+    }*/
 
-    private void clearMap(){
+    /*private void clearMap(){
         //remove the displayed calculted route
         SKRouteManager.getInstance().clearCurrentRoute();
         if(navigationInProgress){
             stopNavigation();
         }
 
-    }
+    }*/
 
-    private void stopNavigation(){
+    /*private void stopNavigation(){
         navigationInProgress = false;
         SKNavigationManager.getInstance().stopNavigation();
-    }
+    }*/
 
     private void drawCircle(){
         //TODO: to use it to draw the geofence.
@@ -263,10 +298,11 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
                         //get the new image
                         Log.i("Image update", "In the method " + getImagecounter());
                         String generatedString = "route1img" + getImagecounter();
+                        Log.i("Image update", "Generated String: " + generatedString);
                         setImagecounter(getImagecounter() + 1);
                         Resources res = getResources();
                         int resourceId = res.getIdentifier(
-                                generatedString, "drawable", getPackageName() );
+                                "drawable/" + generatedString, null, getPackageName() );
                         image.setImageResource(resourceId);
                     }
                 });
@@ -429,14 +465,15 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         // drawCircle();
         //enable the compass
         setHeading(true);
+        layerInteraction.addDataToMap(mapView);
 
         //add the polyline for the route
-        SKPolyline line = jsonParser.getRoute(i.getIntExtra("Route", 1));
+        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
         line.setIdentifier(1);
         line.setOutlineSize(4);
         mapView.addPolyline(line);
         //log the selected route to file
-        logger.logRouteInformation(i.getIntExtra("Route", 1));
+        logger.logRouteInformation(intent.getIntExtra("Route", 1));
     }
 
     private void applysettings() {
@@ -455,7 +492,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     }
 
 
-    private void calculateRoute(SKCoordinate startPoint, SKCoordinate destinationPoint){
+    /*private void calculateRoute(SKCoordinate startPoint, SKCoordinate destinationPoint){
         clearRouteFromCache();
         //set a destination marking object, here it is a flag
         SKAnnotation annotationDestination = new SKAnnotation(10);
@@ -485,7 +522,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     public void clearRouteFromCache() {
         //clears all the cached routes
         SKRouteManager.getInstance().clearAllRoutesFromCache();
-    }
+    }*/
 
     @Override
     public void onMapRegionChanged(SKCoordinateRegion skCoordinateRegion) {
@@ -626,7 +663,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     public void onDestinationReached() {
         Toast.makeText(MapPictureActivity.this, R.string.destination_reached, Toast.LENGTH_SHORT).show();
         // clear the map when reaching destination
-        clearMap();
+        //clearMap();
     }
 
     @Override
@@ -727,11 +764,12 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         return currentCompassValue;
     }*/
 
+    /*
     @SuppressLint("ParcelCreator")
     class AddressResultReceiver extends ResultReceiver {
-        /*
-        private class the handle the results of the geocoding
-         */
+
+        //private class the handle the results of the geocoding
+
         public AddressResultReceiver(Handler handler) {
             super(handler);
         }
@@ -778,5 +816,5 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
             }
         }
 
-    }
+    }*/
 }
