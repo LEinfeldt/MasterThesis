@@ -1,0 +1,37 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Pharmacy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.592765092849731,
+          51.9603064868837
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME ": "Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.598805427551269,
+          51.963294643601216
+        ]
+      }
+    }
+  ]
+}

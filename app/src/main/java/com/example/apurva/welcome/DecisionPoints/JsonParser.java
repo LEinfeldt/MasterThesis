@@ -28,6 +28,11 @@ public class JsonParser {
     private byte[] route3Buffer;
     private byte[] route4Buffer;
     private byte[] route5Buffer;
+    private byte[] route1ARBuffer;
+    private byte[] route2ARBuffer;
+    private byte[] route3ARBuffer;
+    private byte[] route4ARBuffer;
+    private byte[] route5ARBuffer;
 
     private byte[] mapBuffer;
 
@@ -43,7 +48,7 @@ public class JsonParser {
             e.printStackTrace();
         }
         try {
-            is = context.getAssets().open("route1.geojson");
+            is = context.getAssets().open("Route1.json");
             int size = is.available();
             route1Buffer = new byte[size];
             is.read(route1Buffer);
@@ -52,7 +57,7 @@ public class JsonParser {
             e.printStackTrace();
         }
         try {
-            is = context.getAssets().open("route2.geojson");
+            is = context.getAssets().open("Route2.json");
             int size = is.available();
             route2Buffer = new byte[size];
             is.read(route2Buffer);
@@ -61,7 +66,7 @@ public class JsonParser {
             e.printStackTrace();
         }
         try {
-            is = context.getAssets().open("route3.geojson");
+            is = context.getAssets().open("Route3.json");
             int size = is.available();
             route3Buffer = new byte[size];
             is.read(route3Buffer);
@@ -70,7 +75,7 @@ public class JsonParser {
             e.printStackTrace();
         }
         try {
-            is = context.getAssets().open("route4.geojson");
+            is = context.getAssets().open("Route4.json");
             int size = is.available();
             route4Buffer = new byte[size];
             is.read(route4Buffer);
@@ -79,7 +84,7 @@ public class JsonParser {
             e.printStackTrace();
         }
         try {
-            is = context.getAssets().open("route5.geojson");
+            is = context.getAssets().open("Route5.json");
             int size = is.available();
             route5Buffer = new byte[size];
             is.read(route5Buffer);
@@ -96,7 +101,51 @@ public class JsonParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        try {
+            is = context.getAssets().open("Route1AR.json");
+            int size = is.available();
+            route1ARBuffer = new byte[size];
+            is.read(route1Buffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            is = context.getAssets().open("Route2AR.json");
+            int size = is.available();
+            route2ARBuffer = new byte[size];
+            is.read(route1Buffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            is = context.getAssets().open("Route3AR.json");
+            int size = is.available();
+            route3ARBuffer = new byte[size];
+            is.read(route1Buffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            is = context.getAssets().open("Route4AR.json");
+            int size = is.available();
+            route4ARBuffer = new byte[size];
+            is.read(route1Buffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            is = context.getAssets().open("Route5AR.json");
+            int size = is.available();
+            route5ARBuffer = new byte[size];
+            is.read(route1Buffer);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String loadJSONFromAsset(byte[] data) {
@@ -431,6 +480,58 @@ public class JsonParser {
                     Double latitudeValue = jsonInside.getDouble("lat");
                     Double longitudeValue = jsonInside.getDouble("lng");
                     String name = "park" + i;
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
+    /**
+     * Get a hashmap with all coordinates of the sparkasse in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getSparkasseCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("sparkasse");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = "sparkasse" + i;
+                    latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
+                }
+            }
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return latlnglist;
+    }
+
+    /**
+     * Get a hashmap with all coordinates of the post in the json
+     * @return Hashmap with the values and the names
+     */
+    public HashMap<String, SKCoordinate> getPostCoordinates() {
+        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
+        try {
+            JSONObject mJsonObject = new JSONObject(loadJSONFromAsset(mapBuffer));
+            JSONArray mJsonArray = mJsonObject.getJSONArray("post");
+
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                if(jsonInside.has("lat") && jsonInside.has("lng")) {
+                    Double latitudeValue = jsonInside.getDouble("lat");
+                    Double longitudeValue = jsonInside.getDouble("lng");
+                    String name = "post" + i;
                     latlnglist.put(name, new SKCoordinate(latitudeValue, longitudeValue));
                 }
             }

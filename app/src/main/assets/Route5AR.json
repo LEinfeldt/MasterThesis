@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Pharmacy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.592453956604004,
+          51.96000898250227
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Postamt"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.593355178833008,
+          51.95662390473334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Pharmacy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.593526840209961,
+          51.95696771335553
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Sparkasse Münsterland Ost"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.593628764152526,
+          51.95675283327564
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Pharmacy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.593441009521484,
+          51.95461058785987
+        ]
+      }
+    }
+  ]
+}

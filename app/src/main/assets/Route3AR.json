@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Pharmacy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.579032182693481,
+          51.96676515080544
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Pharmacy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.5783562660217285,
+          51.96745260986749
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Deutsche Postbank"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.57853865623474,
+          51.967849216068096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Sparkasse Münsterland Ost"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.57904291152954,
+          51.96776328502249
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "LIDL"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.579032182693481,
+          51.966573453609904
+        ]
+      }
+    }
+  ]
+}

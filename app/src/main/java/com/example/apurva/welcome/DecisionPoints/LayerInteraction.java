@@ -35,6 +35,8 @@ public class LayerInteraction {
     private SKAnnotation[] language;
     private SKAnnotation[] administration;
     private SKAnnotation[] insurance;
+    private SKAnnotation[] sparkasse;
+    private SKAnnotation[] post;
 
     private JsonParser jsonParser;
     private Context context;
@@ -132,6 +134,18 @@ public class LayerInteraction {
                             R.layout.layout_rewe, null, false);
                     annotationView.setView(customView);
                 }
+                else if(entry.getKey().matches("DM")) {
+                    View customView = ((LayoutInflater)
+                            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                            R.layout.layout_dm, null, false);
+                    annotationView.setView(customView);
+                }
+                else if(entry.getKey().matches("Family")) {
+                    View customView = ((LayoutInflater)
+                            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                            R.layout.layout_family, null, false);
+                    annotationView.setView(customView);
+                }
                 else {
                     View customView = ((LayoutInflater)
                             context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
@@ -160,6 +174,46 @@ public class LayerInteraction {
                 annotationView.setView(customView);
                 annotation.setAnnotationView(annotationView);
                 parks[k] = annotation;
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+                k++;
+            }
+            k = 0;
+            sparkasse = new SKAnnotation[jsonParser.getSparkasseCoordinates().size()];
+            //add Sparkasse
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getSparkasseCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
+                        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_sparkasse, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
+                sparkasse[k] = annotation;
+                mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
+                i++;
+                k++;
+            }
+            k = 0;
+            post = new SKAnnotation[jsonParser.getPostCoordinates().size()];
+            //add Post
+            for(Map.Entry<String, SKCoordinate> entry : jsonParser.getPostCoordinates().entrySet()) {
+                SKAnnotation annotation = new SKAnnotation(i);
+                annotation.setLocation(entry.getValue());
+                annotation.setMininumZoomLevel(5);
+                // add an annotation with a view
+                SKAnnotationView annotationView = new SKAnnotationView();
+                //get the view, containing the image, that should be displayed
+                View customView = ((LayoutInflater)
+                        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+                        R.layout.layout_post, null, false);
+                annotationView.setView(customView);
+                annotation.setAnnotationView(annotationView);
+                post[k] = annotation;
                 mapView.addAnnotation(annotation, SKAnimationSettings.ANIMATION_NONE);
                 i++;
                 k++;
@@ -468,6 +522,34 @@ public class LayerInteraction {
                             mapView.addAnnotation(insurance[i], SKAnimationSettings.ANIMATION_NONE);
                         }
                         logger.logLayerSelection("Insurance active");
+                    }
+                    break;
+                case 11:
+                    if(mapView.getAllAnnotations().contains(sparkasse[0])) {
+                        for(int i = 0; i < sparkasse.length; i++) {
+                            mapView.deleteAnnotation(sparkasse[i].getUniqueID());
+                        }
+                        logger.logLayerSelection("Sparkasse inactive");
+                    }
+                    else {
+                        for(int i = 0; i < sparkasse.length; i++) {
+                            mapView.addAnnotation(sparkasse[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                        logger.logLayerSelection("Sparkasse active");
+                    }
+                    break;
+                case 12:
+                    if(mapView.getAllAnnotations().contains(post[0])) {
+                        for(int i = 0; i < post.length; i++) {
+                            mapView.deleteAnnotation(post[i].getUniqueID());
+                        }
+                        logger.logLayerSelection("Post inactive");
+                    }
+                    else {
+                        for(int i = 0; i < post.length; i++) {
+                            mapView.addAnnotation(post[i], SKAnimationSettings.ANIMATION_NONE);
+                        }
+                        logger.logLayerSelection("Post active");
                     }
                     break;
             }

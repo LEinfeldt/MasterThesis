@@ -1,0 +1,69 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Marktkauf"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.571007013320923,
+          51.958091684683154
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Pharmacy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.570438385009765,
+          51.9586404369176
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Ernsting's Family"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.569172382354735,
+          51.958309864086765
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "Name": "DM"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.569408416748047,
+          51.95806523862267
+        ]
+      }
+    }
+  ]
+}
