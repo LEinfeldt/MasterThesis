@@ -1,6 +1,5 @@
 package com.example.apurva.welcome.Activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.SensorManager;
@@ -9,32 +8,23 @@ import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
 import com.example.apurva.welcome.DecisionPoints.LayerInteraction;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
-import com.example.apurva.welcome.Geocoding.Constants;
 import com.example.apurva.welcome.Logger.Logger;
 import com.example.apurva.welcome.R;
-import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
-import com.skobbler.ngx.map.SKAnimationSettings;
 import com.skobbler.ngx.map.SKAnnotation;
-import com.skobbler.ngx.map.SKAnnotationView;
-import com.skobbler.ngx.map.SKCircle;
 import com.skobbler.ngx.map.SKCoordinateRegion;
 import com.skobbler.ngx.map.SKMapCustomPOI;
 import com.skobbler.ngx.map.SKMapPOI;
@@ -45,20 +35,11 @@ import com.skobbler.ngx.map.SKMapViewHolder;
 import com.skobbler.ngx.map.SKPOICluster;
 import com.skobbler.ngx.map.SKPolyline;
 import com.skobbler.ngx.map.SKScreenPoint;
-import com.skobbler.ngx.navigation.SKNavigationListener;
-import com.skobbler.ngx.navigation.SKNavigationManager;
-import com.skobbler.ngx.navigation.SKNavigationSettings;
-import com.skobbler.ngx.navigation.SKNavigationState;
 import com.skobbler.ngx.positioner.SKPositionerManager;
-import com.skobbler.ngx.routing.SKRouteInfo;
-import com.skobbler.ngx.routing.SKRouteJsonAnswer;
-import com.skobbler.ngx.routing.SKRouteListener;
-import com.skobbler.ngx.routing.SKRouteManager;
-import com.skobbler.ngx.routing.SKRouteSettings;
+
 
 import org.json.*;
 
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -79,9 +60,6 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     private SKMapViewHolder mapHolder;
     //PositionMe Button
     private ImageButton locateButtonMap;
-    //resulted coordinates for the origin and destination points
-    private SKCoordinate originPoint;
-    private SKCoordinate destinationPoint;
     //Tag for printing Logs
     private static final String TAG = "MapActivity";
     //to determine if navigation is in process.
@@ -151,7 +129,7 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         //initialize the logger
         this.logger = new Logger();
         try {
-            logger.setupLogging("Map", this);
+            logger.setupLogging("Map", this, intent.getIntExtra("Route", 1));
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -191,24 +169,25 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     }
 
     public void startNavigation(View v) {
+        if(mapView != null) {
+            //log the selected route to file
+            logger.logRouteInformation();
+            //Start logging from now on
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    //log the current position
+                    logger.logLocation(mLocation.currentPosition.getCoordinate());
+                }
+            }, 0, 1000*60);
 
-        //Start logging from now on
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //log the current position
-                logger.logLocation(mLocation.currentPosition.getCoordinate());
-            }
-        }, 0, 1000*60);
-
-        //display the route to be walked
-        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
-        line.setIdentifier(1);
-        line.setOutlineSize(4);
-        mapView.addPolyline(line);
-        //log the selected route to file
-        logger.logRouteInformation(intent.getIntExtra("Route", 1));
-        startNav.setVisibility(View.INVISIBLE);
+            //display the route to be walked
+            SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
+            line.setIdentifier(1);
+            line.setOutlineSize(4);
+            mapView.addPolyline(line);
+            startNav.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setHeading(boolean enabled) {

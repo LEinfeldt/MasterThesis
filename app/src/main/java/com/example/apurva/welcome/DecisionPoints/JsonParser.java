@@ -105,7 +105,7 @@ public class JsonParser {
             is = context.getAssets().open("Route1AR.json");
             int size = is.available();
             route1ARBuffer = new byte[size];
-            is.read(route1Buffer);
+            is.read(route1ARBuffer);
             is.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,7 +114,7 @@ public class JsonParser {
             is = context.getAssets().open("Route2AR.json");
             int size = is.available();
             route2ARBuffer = new byte[size];
-            is.read(route1Buffer);
+            is.read(route2ARBuffer);
             is.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,7 +123,7 @@ public class JsonParser {
             is = context.getAssets().open("Route3AR.json");
             int size = is.available();
             route3ARBuffer = new byte[size];
-            is.read(route1Buffer);
+            is.read(route3ARBuffer);
             is.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,7 +132,7 @@ public class JsonParser {
             is = context.getAssets().open("Route4AR.json");
             int size = is.available();
             route4ARBuffer = new byte[size];
-            is.read(route1Buffer);
+            is.read(route4ARBuffer);
             is.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -141,7 +141,7 @@ public class JsonParser {
             is = context.getAssets().open("Route5AR.json");
             int size = is.available();
             route5ARBuffer = new byte[size];
-            is.read(route1Buffer);
+            is.read(route5ARBuffer);
             is.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -318,18 +318,19 @@ public class JsonParser {
 
             JSONArray mJsonArray = mJsonObject.getJSONArray("features");
 
-            //get all the data from the json file
+            //get all the data from the json file (0 would be the polyline --> so start at 1)
             for(int i = 1; i < mJsonArray.length(); i++) {
+                Log.i("JSONPARSER", "Value of i: " + i);
                 JSONObject jsonInside = mJsonArray.getJSONObject(i);
+                Log.i("JSONPARSER", "Value of mJsonArray: " + jsonInside);
+                Log.i("JSONPARSER", "Value of name: " + jsonInside.getString("type"));
                 JSONObject current = jsonInside.getJSONObject("geometry");
-                //decision points (without properties
-                if(!jsonInside.getJSONObject("properties").has("marker-color")) {
-                    JSONArray coords = current.getJSONArray("coordinates");
-                    double latitude = coords.getDouble(1);
-                    double longitude = coords.getDouble(0);
-                    LatLng location = new LatLng(latitude, longitude);
-                    latlnglist.put("" + i, location);
-                }
+                //decision points and confirmation points
+                JSONArray coords = current.getJSONArray("coordinates");
+                double latitude = coords.getDouble(1);
+                double longitude = coords.getDouble(0);
+                LatLng location = new LatLng(latitude, longitude);
+                latlnglist.put(jsonInside.getString("name"), location);
             }
         }
         catch(JSONException e) {

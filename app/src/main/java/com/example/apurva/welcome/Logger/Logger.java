@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
 //import de.unimuenster.ifgi.locormandemo.filter.Orientation;
 //import de.unimuenster.ifgi.locormandemo.manipulations.ExperimentProvider;
@@ -29,7 +30,8 @@ public class Logger {
     private CSVWriter mWriter;
 
     private String mExperimentID = "default";
-    private String[] fileHeaderCombined = {"ID","Experiment", "event","log_timestamp", "original_lat", "original_lon", "layers", "route"};
+    private int myRoute;
+    private String[] fileHeaderCombined = {"ID","Experiment", "event","timestamp", "latitude", "longitude", "layerAction", "route"};
 
     private long mID = 0;
 
@@ -38,10 +40,11 @@ public class Logger {
 
     Context mContext;
 
-    public void setupLogging(String experimentID, Context context) throws IOException {
+    public void setupLogging(String experimentID, Context context, int route) throws IOException {
 
         mContext = context;
 
+        myRoute = route;
         // load logging settings from shared prefs
         loadLogfileSettingsFromSharedPrefs();
 
@@ -78,7 +81,7 @@ public class Logger {
         String originalLat = ""+mLastLocation.getLatitude();
         String originalLon = ""+mLastLocation.getLongitude();
         String activeLayer = "-";
-        String routeAction = "-";
+        String routeAction = "No." + myRoute;
 
 
         String[] data = {idString, mExperimentID, event, logTimestamp, originalLat, originalLon, activeLayer, routeAction};
@@ -93,7 +96,7 @@ public class Logger {
      */
     public void logLayerSelection(String layerAction) {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String idString = "" + mID;
         String event = "Layers changed";
@@ -101,7 +104,7 @@ public class Logger {
         String lat = "-";
         String lng = "-";
         String activeLayer = layerAction;
-        String routeAction = "-";
+        String routeAction = "No. " + myRoute;
 
         String[] data = {idString, mExperimentID, event, logTimeStamp, lat, lng, activeLayer, routeAction};
 
@@ -111,11 +114,9 @@ public class Logger {
 
     /**
      * Add the selected route to the logger
-     * @param route Number of the route, that was selected
      */
-    public void logRouteInformation(int route) {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM-dd HH:mm:ss");
+    public void logRouteInformation() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String idString = "" + mID;
         String event = "Selected Route";
@@ -123,7 +124,7 @@ public class Logger {
         String lat = "-";
         String lng = "-";
         String activeLayer = "-";
-        String routeAction = "No. " + route;
+        String routeAction = "No. " + myRoute;
 
         String[] data = {idString, mExperimentID, event, logTimeStamp, lat, lng, activeLayer, routeAction};
 
@@ -131,8 +132,25 @@ public class Logger {
         mID++;
     }
 
+    public void logGeofence(String event, SKCoordinate pos) {
 
-    //TODO: Write method to log geofence event (enter/leaving)
+        mLastLocation = pos;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Log.i("Logger", "Geofence log: " + event);
+
+        String idString = "" + mID;
+        String geofence = event;
+        String logTimeStamp = dateFormat.format(System.currentTimeMillis());
+        String lat = "" + mLastLocation.getLatitude();
+        String lng = "" + mLastLocation.getLongitude();
+        String activeLayer = "-";
+        String routeAction = "No. "+ myRoute;
+
+        String[] data = {idString, mExperimentID, geofence, logTimeStamp, lat, lng, activeLayer, routeAction};
+
+        mWriter.writeNext(data);
+        mID++;
+    }
 
     public void stopLoggingAndWriteFile() throws IOException {
 

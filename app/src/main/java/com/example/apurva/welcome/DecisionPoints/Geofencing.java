@@ -77,6 +77,7 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 
     public void populateGeofenceList(int route) {
         //change back to getDPCoordiantes for testing why it crashed
+        Log.i("Geofence", "Populated geofence list");
         for (Map.Entry<String, LatLng> entry : jsonParser.getDPCoordinates().entrySet()) {
             mGeofenceList.add(new Geofence.Builder()
                     .setRequestId(entry.getKey())
@@ -146,7 +147,9 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         if(mIntent != null) {
             return PendingIntent.getService(context, 0, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
-        Log.i("Geofencing", "Aus der if raus");
+        //Point to the broadcast receiver
+        //Intent intent = new Intent("com.example.apurva.welcome.ACTION_RECEIVE_GEOFENCE");
+        //Log.i("Geofencing", "Aus der if raus");
         Intent intent = new Intent(context, GeofenceTransitionsIntentService.class);
         intent.putExtra("mode", mode);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling addGeofence()
@@ -154,6 +157,12 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         //mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         //Log.i("Geofencing", "Service setup " + serviceConnection);
         return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        /*return PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);*/
     }
 
     @Override

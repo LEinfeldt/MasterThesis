@@ -121,7 +121,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Confirmation",
+      "name": "Confirmation1",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -133,7 +133,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision2",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -145,7 +145,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Confirmation",
+      "name": "Confirmation3",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -157,7 +157,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision4",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -169,7 +169,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision5",
       "geometry": {
         "type": "Point",
         "coordinates": [

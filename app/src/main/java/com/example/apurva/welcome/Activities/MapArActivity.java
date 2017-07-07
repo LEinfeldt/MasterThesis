@@ -1,13 +1,17 @@
 package com.example.apurva.welcome.Activities;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -26,9 +30,11 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.apurva.welcome.DecisionPoints.GeofenceTransitionsIntentService;
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
 import com.example.apurva.welcome.DecisionPoints.LayerInteraction;
+import com.example.apurva.welcome.DecisionPoints.ServiceCallbacks;
 import com.example.apurva.welcome.DeviceUtils.LocationUpdate;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
 import com.example.apurva.welcome.Geocoding.Constants;
@@ -73,8 +79,12 @@ import java.util.TimerTask;
 This activity is responsible for the search of destination, route calculation and navigation. This also starts the geofencing services
 if AR View is enabled
  */
-public class MapArActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener {
+public class MapArActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener, ServiceCallbacks {
 
+    private boolean bound = false;
+    private PendingIntent mGeofencePendingIntent;
+    private Intent mIntent;
+    private GeofenceTransitionsIntentService geoService;
     private Button startNav;
     //drawer item
     private DrawerLayout mDrawerLayout;
@@ -166,7 +176,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         //initialize the logger
         this.logger = new Logger();
         try {
-            logger.setupLogging("Map + AR", this);
+            logger.setupLogging("Map + AR", this, intent.getIntExtra("Route", 1));
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -187,8 +197,11 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
             e.printStackTrace();
         }
 
+        mIntent =  new Intent(this, GeofenceTransitionsIntentService.class);
+        mIntent.putExtra("mode", "AR");
+
         try {
-            geofencing = new Geofencing(this, intent.getIntExtra("Route", 1), "AR");
+            geofencing = new Geofencing(this, intent.getIntExtra("Route", 1), "AR", mIntent);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -241,24 +254,26 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
     }
 
     public void startNavigation(View v) {
+        if(mapView != null) {
+            //log the selected route to file
+            logger.logRouteInformation();
+            //Start logging time from now on
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    //log the current position
+                    logger.logLocation(mLocation.currentPosition.getCoordinate());
+                }
+            }, 0, 1000 * 60);
 
-        //Start logging from now on
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //log the current position
-                logger.logLocation(mLocation.currentPosition.getCoordinate());
-            }
-        }, 0, 1000*60);
+            //display the route to be walked
+            SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
+            line.setIdentifier(1);
+            line.setOutlineSize(4);
 
-        //display the route to be walked
-        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
-        line.setIdentifier(1);
-        line.setOutlineSize(4);
-        mapView.addPolyline(line);
-        //log the selected route to file
-        logger.logRouteInformation(intent.getIntExtra("Route", 1));
-        startNav.setVisibility(View.INVISIBLE);
+            mapView.addPolyline(line);
+            startNav.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setHeading(boolean enabled) {
@@ -276,6 +291,14 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
             sensorUpdate.unregister();
         }
     }
+
+
+    /**
+     * Don't need these methods of the interface in this class, just override
+     */
+    public void updateImage(){};
+    public void setImagecounter(int i) {};
+    public int getImagecounter(){return 0;};
 
     /*public void onButtonClicked(View view) {
         //If the central button is clicked while the text reads calculate route
@@ -360,6 +383,15 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         }
     }
 
+    /**
+     * Log a geofence event
+     * @param geofence geofence event that was triggered
+     * @param pos Position of the user at triggering time
+     */
+    @Override
+    public void logGeofence(String geofence, SKCoordinate pos) {
+        logger.logGeofence(geofence, pos);
+    }
 
     @Override
     public void onBackPressed() {
@@ -398,14 +430,39 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
     @Override
     protected void onStart(){
         super.onStart();
+        mGeofencePendingIntent = PendingIntent.getService(getApplicationContext(), 0, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         geofencing.apiConnect();
+        bindService(mIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop(){
         super.onStop();
         geofencing.apiDisconnect();
+        /*if(bound) {
+            geoService.setCallbacks(null); //unregister service
+            unbindService(serviceConnection);
+            bound = false;
+        }*/
     }
+
+    /** Callbacks for service binding, passed to bindService() */
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // cast the IBinder and get geoService instance
+            GeofenceTransitionsIntentService.LocalBinder binder = (GeofenceTransitionsIntentService.LocalBinder) service;
+            geoService = binder.getService();
+            bound = true;
+            geoService.setCallbacks(MapArActivity.this); // register
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            bound = false;
+        }
+    };
 
     @Override
     protected void onPause() {

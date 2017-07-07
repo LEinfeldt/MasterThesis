@@ -8,11 +8,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.apurva.welcome.Activities.DialogActivity;
-import com.example.apurva.welcome.Activities.MapPictureActivity;
 import com.example.apurva.welcome.Augmentations.MyGLSurfaceView;
 import com.example.apurva.welcome.Augmentations.PointOfInterests;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
+import com.skobbler.ngx.SKCoordinate;
 
 /**
  * Created by apurv on 22-04-2017
@@ -49,15 +49,20 @@ public class GeofenceTransitionsIntentService extends IntentService {
         return binder;
     }
 
+    /**
+     * Set the callback for the handled events to the corresponding activity
+     * @param callbacks Activity to be called
+     */
     public void setCallbacks(ServiceCallbacks callbacks) {
         if(called) return;
         serviceCallbacks = callbacks;
         called = true;
-        Log.i("GeofenceService", "SetCallbacks: " + called + callbacks);
+        Log.i("Setcallbacks", "Updated");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
         Log.i("Geofence", "event reiceived");
 
         this.intent = new Intent(this, DialogActivity.class);
@@ -72,7 +77,14 @@ public class GeofenceTransitionsIntentService extends IntentService {
         int geofenceTransition = event.getGeofenceTransition();
         //if the user enters into a geofence
         if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
-            Log.i("Geofence", "Entered geofence");
+            Log.i("Geoservice", "Enter");
+            serviceCallbacks.logGeofence("Entered " + event.getTriggeringGeofences().get(0).getRequestId(),
+                    new SKCoordinate(
+                            event.getTriggeringLocation().getLatitude(),
+                            event.getTriggeringLocation().getLongitude()
+                    ));
+            Log.i("Geofence", "Entered geofence: " + event.getTriggeringGeofences().get(0).getRequestId());
+
             //if the event was triggered by the ar view
             if(mode.contentEquals("AR")) {
                 Geofence triggeredGeofence = event.getTriggeringGeofences().get(0);
@@ -101,6 +113,11 @@ public class GeofenceTransitionsIntentService extends IntentService {
         //if the user exists a geofence
         else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             Toast.makeText(this, "Navigation Resumed", Toast.LENGTH_SHORT).show();
+            //log the event leaving and the coordinates
+            serviceCallbacks.logGeofence("Left "+ event.getTriggeringGeofences().get(0).getRequestId(), new SKCoordinate(
+                    event.getTriggeringLocation().getLatitude(),
+                    event.getTriggeringLocation().getLongitude()
+            ));
             return;
         }
     }

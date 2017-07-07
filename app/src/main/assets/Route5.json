@@ -117,7 +117,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision1",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -129,7 +129,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision2",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -141,7 +141,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Confirmation",
+      "name": "Confirmation3",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -153,7 +153,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision4",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -165,7 +165,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision5",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -177,7 +177,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision6",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -189,7 +189,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision7",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -201,7 +201,7 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
+      "name": "Decision8",
       "geometry": {
         "type": "Point",
         "coordinates": [

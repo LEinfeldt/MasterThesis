@@ -250,7 +250,7 @@ public class CameraActivity extends AppCompatActivity implements TextureView.Sur
         public void onOpened(CameraDevice camera){
 
             mCameraDevice = camera;
-            Toast.makeText(getApplicationContext(), "Camera is connected", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Camera is connected", Toast.LENGTH_SHORT).show();
             startPreview();
         }
 

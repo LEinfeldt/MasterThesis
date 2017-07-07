@@ -52,7 +52,8 @@
             android:name=".Geocoding.FetchLocationIntentService"
             android:enabled="true"
             android:exported="false" />
-        <service android:name=".DecisionPoints.GeofenceTransitionsIntentService" />
+        <service android:name=".DecisionPoints.GeofenceTransitionsIntentService"
+            android:exported="true"/>
 
         <activity android:name=".Activities.CameraActivity" />
         <activity
@@ -60,6 +61,13 @@
             android:theme="@style/Theme.AppCompat.Light"
             android:noHistory="true"
             ></activity>
+
+        <receiver android:name="com.example.apurva.welcome.DecisionPoints.GeofenceReceiver"
+            android:exported="false">
+            <intent-filter >
+                <action android:name="com.example.apurva.welcome.ACTION_RECEIVE_GEOFENCE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

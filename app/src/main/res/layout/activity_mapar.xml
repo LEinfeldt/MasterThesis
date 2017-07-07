@@ -23,8 +23,8 @@
             android:id="@+id/locateButtonAR"
             android:src="@mipmap/ic_my_location"
             android:contentDescription="@string/current_position"
-            android:layout_alignBottom="@+id/view_group_mapAR"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/startNavigationMapAR" />
 
         <Button
             android:layout_width="wrap_content"

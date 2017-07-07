@@ -101,7 +101,6 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -112,8 +111,11 @@
     },
     {
       "type": "Feature",
-      "properties": {},
-      "name": "Confirmation",
+      "properties": {
+        "marker-color": "#ff0000",
+        "marker-size": "medium",
+        "marker-symbol": ""
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -125,7 +127,6 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -136,20 +137,22 @@
     },
     {
       "type": "Feature",
-      "properties": {},
-      "name": "Confirmation",
+      "properties": {
+        "marker-color": "#ff0000",
+        "marker-size": "medium",
+        "marker-symbol": ""
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          7.577476501464843,
-          51.966375145303374
+          7.576382160186768,
+          51.96588598106236
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -161,7 +164,6 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -172,8 +174,11 @@
     },
     {
       "type": "Feature",
-      "properties": {},
-      "name": "Confirmation",
+      "properties": {
+        "marker-color": "#ff0000",
+        "marker-size": "medium",
+        "marker-symbol": ""
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -185,7 +190,6 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -196,8 +200,11 @@
     },
     {
       "type": "Feature",
-      "properties": {},
-      "name": "Confirmation",
+      "properties": {
+        "marker-color": "#ff0000",
+        "marker-size": "medium",
+        "marker-symbol": ""
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -209,12 +216,27 @@
     {
       "type": "Feature",
       "properties": {},
-      "name": "Decision",
       "geometry": {
         "type": "Point",
         "coordinates": [
           7.580094337463379,
           51.972086073273395
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#008000",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "NAME": "Bürgerbüro Gievenbeck"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.577433586120605,
+          51.967578202210774
         ]
       }
     }

@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/route1img0"
+            android:src="@drawable/route1img5"
             />
 
         <com.skobbler.ngx.map.SKMapViewHolder
@@ -24,15 +24,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            />
+            >
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/start_navigation"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/startNavigationMapPicture"
-            android:onClick="startNavigation"/>
+            <Button
+                android:id="@+id/startNavigationMapPicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:onClick="startNavigation"
+                android:text="@string/start_navigation" />
+        </com.skobbler.ngx.map.SKMapViewHolder>
 
     </LinearLayout>
 

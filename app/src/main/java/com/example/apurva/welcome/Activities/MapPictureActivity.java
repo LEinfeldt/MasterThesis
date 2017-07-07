@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.apurva.welcome.DecisionPoints.GeofenceReceiver;
 import com.example.apurva.welcome.DecisionPoints.GeofenceTransitionsIntentService;
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
@@ -168,7 +169,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         //initialize the logger
         this.logger = new Logger();
         try {
-            logger.setupLogging("Map + Picture", this);
+            logger.setupLogging("Map + Picture", this, intent.getIntExtra("Route", 1));
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -204,24 +205,25 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     }
 
     public void startNavigation(View v) {
+        if(mapView != null) {
+            //log the selected route to file
+            logger.logRouteInformation();
+            //Start logging from now on
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    //log the current position
+                    logger.logLocation(mLocation.currentPosition.getCoordinate());
+                }
+            }, 0, 1000*60);
 
-        //Start logging from now on
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //log the current position
-                logger.logLocation(mLocation.currentPosition.getCoordinate());
-            }
-        }, 0, 1000*60);
-
-        //display the route to be walked
-        SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
-        line.setIdentifier(1);
-        line.setOutlineSize(4);
-        mapView.addPolyline(line);
-        //log the selected route to file
-        logger.logRouteInformation(intent.getIntExtra("Route", 1));
-        startNav.setVisibility(View.INVISIBLE);
+            //display the route to be walked
+            SKPolyline line = jsonParser.getRoute(intent.getIntExtra("Route", 1));
+            line.setIdentifier(1);
+            line.setOutlineSize(4);
+            mapView.addPolyline(line);
+            startNav.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setHeading(boolean enabled) {
@@ -324,9 +326,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
                         Log.i("Image update", "Generated String: " + generatedString);
                         setImagecounter(getImagecounter() + 1);
                         Resources res = getResources();
-                        Log.i("UpdateImage", "Resources: " + res);
-                        int resourceId = res.getIdentifier(
-                                "drawable/" + generatedString, null, getPackageName() );
+                        int resourceId = res.getIdentifier("drawable/" + generatedString, null, getPackageName() );
                         Log.i("UpdateImage", "Id: " + resourceId);
                         image.setImageResource(resourceId);
                     }
@@ -385,11 +385,22 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         }
     }
 
+    @Override
+    public void logGeofence(String geofence, SKCoordinate pos) {
+        logger.logGeofence(geofence, pos);
+    }
 
     @Override
     public void onBackPressed() {
         //double click to exit the application
         if (exit) {
+            try {
+                logger.stopLoggingAndWriteFile();
+                Log.i("Finish", "Written file and finish app");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
             finish(); // finish activity
         } else {
             Toast.makeText(this, "Press Back again to Exit.",
@@ -418,7 +429,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     protected void onStart(){
         super.onStart();
         mGeofencePendingIntent = PendingIntent.getService(getApplicationContext(), 0, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Log.i("Activity", "Bind: " + mGeofencePendingIntent);
+        //Log.i("Activity", "Bind: " + mGeofencePendingIntent);
         geofencing.apiConnect();
         bindService(mIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -427,11 +438,11 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     protected void onStop(){
         super.onStop();
         geofencing.apiDisconnect();
-        if(bound) {
+        /*if(bound) {
             geoService.setCallbacks(null); //unregister service
             unbindService(serviceConnection);
             bound = false;
-        }
+        }*/
     }
 
     /** Callbacks for service binding, passed to bindService() */
@@ -442,7 +453,6 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
             // cast the IBinder and get geoService instance
             GeofenceTransitionsIntentService.LocalBinder binder = (GeofenceTransitionsIntentService.LocalBinder) service;
             geoService = binder.getService();
-            Log.i("ServiceConnection", "In new Connection");
             bound = true;
             geoService.setCallbacks(MapPictureActivity.this); // register
         }
