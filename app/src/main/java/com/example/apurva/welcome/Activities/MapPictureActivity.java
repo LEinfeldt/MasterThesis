@@ -8,12 +8,16 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
 //import android.location.Address;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 //import android.os.ResultReceiver;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -39,7 +43,7 @@ import com.example.apurva.welcome.Logger.Logger;
 import com.example.apurva.welcome.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
-import com.skobbler.ngx.map.SKAnimationSettings;
+//import com.skobbler.ngx.map.SKAnimationSettings;
 import com.skobbler.ngx.map.SKAnnotation;
 import com.skobbler.ngx.map.SKCircle;
 import com.skobbler.ngx.map.SKCoordinateRegion;
@@ -52,15 +56,15 @@ import com.skobbler.ngx.map.SKMapViewHolder;
 import com.skobbler.ngx.map.SKPOICluster;
 import com.skobbler.ngx.map.SKPolyline;
 import com.skobbler.ngx.map.SKScreenPoint;
-import com.skobbler.ngx.navigation.SKNavigationListener;
+//import com.skobbler.ngx.navigation.SKNavigationListener;
 //import com.skobbler.ngx.navigation.SKNavigationManager;
 //import com.skobbler.ngx.navigation.SKNavigationSettings;
 import com.skobbler.ngx.navigation.SKNavigationState;
 import com.skobbler.ngx.positioner.SKPositionerManager;
-import com.skobbler.ngx.routing.SKRouteInfo;
-import com.skobbler.ngx.routing.SKRouteJsonAnswer;
-import com.skobbler.ngx.routing.SKRouteListener;
-import com.skobbler.ngx.routing.SKRouteManager;
+//import com.skobbler.ngx.routing.SKRouteInfo;
+//import com.skobbler.ngx.routing.SKRouteJsonAnswer;
+//import com.skobbler.ngx.routing.SKRouteListener;
+//import com.skobbler.ngx.routing.SKRouteManager;
 //import com.skobbler.ngx.routing.SKRouteSettings;
 
 import org.json.JSONException;
@@ -76,8 +80,9 @@ import static android.R.attr.id;
  * All code snippets for the calculation of navication are commented but not deleted (also imports)
  */
 
-public class MapPictureActivity extends AppCompatActivity implements SKMapSurfaceListener, SKRouteListener, SKNavigationListener, SensorUpdate.AccelMagnoListener, ServiceCallbacks {
+public class MapPictureActivity extends AppCompatActivity implements SKMapSurfaceListener, /*SKRouteListener, SKNavigationListener,*/ SensorUpdate.AccelMagnoListener, ServiceCallbacks {
 
+    private Handler mHandler;
     private Button startNav;
     private LayerInteraction layerInteraction;
     private Intent mIntent;
@@ -310,83 +315,137 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
      */
     @Override
     public void updateImage() {
+
         Log.i("UpdateImage", "In the method");
-        if(routeNumber == 1) {
-            Log.i("UpdateImage", "In der Route1 if");
+        if (routeNumber == 1) {
             //count the images in the first route
-            if(imagecounter < 4) {
-                Log.i("UpdateImage", "In the imagecounter if " + imagecounter);
+            if (imagecounter < 4) {
                 //view is only touchable from ui thread
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         //get the new image
-                        Log.i("Image update", "In the method " + getImagecounter());
                         String generatedString = "route1img" + getImagecounter();
-                        Log.i("Image update", "Generated String: " + generatedString);
                         setImagecounter(getImagecounter() + 1);
-                        Resources res = getResources();
-                        int resourceId = res.getIdentifier("drawable/" + generatedString, null, getPackageName() );
-                        Log.i("UpdateImage", "Id: " + resourceId);
-                        image.setImageResource(resourceId);
-                    }
-                });
-            }
-        }
-        if(routeNumber == 2) {
-            //count the images in the first route
-            if(imagecounter < 5) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //get the new image
-                        String generatedString = "route2img" + ++imagecounter;
-                        Resources res = getResources();
-                        int resourceId = res.getIdentifier(
-                                generatedString, "drawable", getPackageName() );
-                        image.setImageResource(resourceId);
+                        int resourceId = getResources().getIdentifier("drawable/" + generatedString, null, getPackageName());
+                        try {
+                            Drawable img = Drawable.createFromStream(getResources().openRawResource(resourceId), null);
+                            image.setDrawingCacheEnabled(true);
+                            image.setImageDrawable(img);
+                        }
+                        catch (Exception e) {
+                            Log.e("UpdateImage", "Could not load file");
+                            e.printStackTrace();
+                        }
                     }
                 });
 
+                return;
             }
-        }
-        if(routeNumber == 3) {
-            //count the images in the first route
-            if(imagecounter < 5) {
-                //get the new image
-                String generatedString = "route3img" + ++imagecounter;
-                Resources res = getResources();
-                int resourceId = res.getIdentifier(
-                        generatedString, "drawable", getPackageName() );
-                image.setImageResource(resourceId);
+            else if (routeNumber == 2) {
+                //count the images in the first route
+                if (imagecounter < 5) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //get the new image
+                            String generatedString = "route2img" + getImagecounter();
+                            setImagecounter(getImagecounter() + 1);
+                            int resourceId = getResources().getIdentifier(
+                                    "drawable/" + generatedString, null, getPackageName());
+                            try {
+                                Drawable img = Drawable.createFromStream(getResources().openRawResource(resourceId), null);
+                                image.setDrawingCacheEnabled(true);
+                                image.setImageDrawable(img);
+                            }
+                            catch (Exception e) {
+                                Log.e("UpdateImage", "Could not load file");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                }
             }
-        }
-        if(routeNumber == 4) {
-            //count the images in the first route
-            if(imagecounter < 10) {
-                //get the new image
-                String generatedString = "route4img" + ++imagecounter;
-                Resources res = getResources();
-                int resourceId = res.getIdentifier(
-                        generatedString, "drawable", getPackageName() );
-                image.setImageResource(resourceId);
+            else if (routeNumber == 3) {
+                //count the images in the first route
+                if (imagecounter < 5) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //get the new image
+                            String generatedString = "route3img" + getImagecounter();
+                            setImagecounter(getImagecounter() + 1);
+                            int resourceId = getResources().getIdentifier(
+                                    "darawable/" + generatedString, null, getPackageName());
+                            try {
+                                Drawable img = Drawable.createFromStream(getResources().openRawResource(resourceId), null);
+                                image.setDrawingCacheEnabled(true);
+                                image.setImageDrawable(img);
+                            }
+                            catch (Exception e) {
+                                Log.e("UpdateImage", "Could not load file");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
             }
-        }
-        if(routeNumber == 5) {
-            //count the images in the first route
-            if(imagecounter < 8) {
-                //get the new image
-                String generatedString = "route5img" + ++imagecounter;
-                Resources res = getResources();
-                int resourceId = res.getIdentifier(
-                        generatedString, "drawable", getPackageName() );
-                image.setImageResource(resourceId);
+            else if (routeNumber == 4) {
+                //count the images in the first route
+                if (imagecounter < 10) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //get the new image
+                            String generatedString = "route4img" + getImagecounter();
+                            setImagecounter(getImagecounter() + 1);
+                            int resourceId = getResources().getIdentifier(
+                                    "drawable/" + generatedString, null, getPackageName());
+                            try {
+                                Drawable img = Drawable.createFromStream(getResources().openRawResource(resourceId), null);
+                                image.setDrawingCacheEnabled(true);
+                                image.setImageDrawable(img);
+                            }
+                            catch (Exception e) {
+                                Log.e("UpdateImage", "Could not load file");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+            else if (routeNumber == 5) {
+                //count the images in the first route
+                if (imagecounter < 8) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //get the new image
+                            String generatedString = "route5img" + getImagecounter();
+                            setImagecounter(getImagecounter() + 1);
+                            int resourceId = getResources().getIdentifier(
+                                    "drawable/" + generatedString, null, getPackageName());
+                            try {
+                                Drawable img = Drawable.createFromStream(getResources().openRawResource(resourceId), null);
+                                image.setDrawingCacheEnabled(true);
+                                image.setImageDrawable(img);
+                            }
+                            catch (Exception e) {
+                                Log.e("UpdateImage", "Could not load file");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
             }
         }
     }
 
     @Override
     public void logGeofence(String geofence, SKCoordinate pos) {
+        Log.i("LogGeofence", "In der Activity, method called");
         logger.logGeofence(geofence, pos);
     }
 
@@ -438,11 +497,21 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     protected void onStop(){
         super.onStop();
         geofencing.apiDisconnect();
-        /*if(bound) {
+        if(bound) {
             geoService.setCallbacks(null); //unregister service
             unbindService(serviceConnection);
             bound = false;
-        }*/
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(bound) {
+            geoService.setCallbacks(null); //unregister service
+            unbindService(serviceConnection);
+            bound = false;
+        }
     }
 
     /** Callbacks for service binding, passed to bindService() */
@@ -550,6 +619,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         SKRouteManager.getInstance().clearAllRoutesFromCache();
     }*/
 
+
     @Override
     public void onMapRegionChanged(SKCoordinateRegion skCoordinateRegion) {
 
@@ -654,7 +724,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     public void onScreenshotReady(Bitmap bitmap) {
 
     }
-
+/*
     @Override
     public void onRouteCalculationCompleted(SKRouteInfo skRouteInfo) {
         // select the current route (on which navigation will run)
@@ -741,7 +811,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     public void onTunnelEvent(boolean b) {
 
     }
-
+*/
     @Override
     public void onAccelSensorChanged(float[] accelValue) {
         //gets the updated accelerometer values

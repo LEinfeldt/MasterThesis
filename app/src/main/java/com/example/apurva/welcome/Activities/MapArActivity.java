@@ -262,6 +262,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
                 @Override
                 public void run() {
                     //log the current position
+                    Log.i("Timer", "Location: " + mLocation.currentPosition);
                     logger.logLocation(mLocation.currentPosition.getCoordinate());
                 }
             }, 0, 1000 * 60);
@@ -439,11 +440,21 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
     protected void onStop(){
         super.onStop();
         geofencing.apiDisconnect();
-        /*if(bound) {
+        if(bound) {
             geoService.setCallbacks(null); //unregister service
             unbindService(serviceConnection);
             bound = false;
-        }*/
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(bound) {
+            geoService.setCallbacks(null); //unregister service
+            unbindService(serviceConnection);
+            bound = false;
+        }
     }
 
     /** Callbacks for service binding, passed to bindService() */

@@ -121,7 +121,4 @@ public class GeofenceTransitionsIntentService extends IntentService {
             return;
         }
     }
-
-
-
 }
