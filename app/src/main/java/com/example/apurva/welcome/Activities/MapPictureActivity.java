@@ -69,6 +69,7 @@ import com.skobbler.ngx.positioner.SKPositionerManager;
 
 import org.json.JSONException;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -303,6 +304,11 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
     @Override
     public int getImagecounter() {
         return imagecounter;
+    }
+
+    @Override
+    public void deleteGeofence(List ids) {
+        geofencing.removeGeofence(ids);
     }
 
     /**

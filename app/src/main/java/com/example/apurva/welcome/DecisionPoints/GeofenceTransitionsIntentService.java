@@ -14,6 +14,10 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 import com.skobbler.ngx.SKCoordinate;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Stack;
+
 /**
  * Created by apurv on 22-04-2017
  * This is the intent service where you would define what to do if
@@ -93,13 +97,13 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 Toast.makeText(this, "Open dialogbox", Toast.LENGTH_SHORT).show();
                 //start the dialog to ask for the camera
                 startActivity(this.intent);
+                ArrayList<String> list = new ArrayList<>();
+                list.add(triggeredGeofence.getRequestId());
+                serviceCallbacks.deleteGeofence(list);
                 return;
             }
             //else if the event was triggerd by the picture view
             else if(mode.contentEquals("picture")) {
-                Geofence triggeredGeofence = event.getTriggeringGeofences().get(0);
-                PointOfInterests.presentGeofence = triggeredGeofence;
-                MyGLSurfaceView.currentGeofence = triggeredGeofence;
                 Toast.makeText(this, "Confirmationpoint reached", Toast.LENGTH_SHORT).show();
                 //call the method to update the image in the picture view
                 Log.i("Geofence", "In the picture if " + serviceCallbacks);

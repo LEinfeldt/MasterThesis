@@ -1,17 +1,14 @@
 package com.example.apurva.welcome.DecisionPoints;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.apurva.welcome.Activities.MapPictureActivity;
 import com.example.apurva.welcome.Geocoding.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,7 +70,6 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         buildGoogleApiClient(context);
         mContext = context;
         mIntent = aIntent;
-        //Log.i("Geofencing", "ServiceConnection: " + serviceConnection);
     }
 
     public void populateGeofenceList(int route) {
@@ -125,14 +122,16 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         }
     }
 
-    public void removeGeofence() {
-        try {
-            LocationServices.GeofencingApi.removeGeofences(
-                    mGoogleApiClient,
-                    getGeofencePendingIntent(mContext)
-            ).setResultCallback(this); // Result processed in onResult().
-        } catch (SecurityException securityException) {
-            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+    public void removeGeofence(List<String> ids) {
+        if(mGoogleApiClient.isConnected()) {
+            try {
+                LocationServices.GeofencingApi.removeGeofences(
+                        mGoogleApiClient,
+                        ids
+                ).setResultCallback(this); // Result processed in onResult().
+            } catch (SecurityException securityException) {
+                // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+            }
         }
     }
 
@@ -144,25 +143,13 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     }
 
     private PendingIntent getGeofencePendingIntent(Context context) {
-        if(mIntent != null) {
+        if (mIntent != null) {
             return PendingIntent.getService(context, 0, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
-        //Point to the broadcast receiver
-        //Intent intent = new Intent("com.example.apurva.welcome.ACTION_RECEIVE_GEOFENCE");
-        //Log.i("Geofencing", "Aus der if raus");
         Intent intent = new Intent(context, GeofenceTransitionsIntentService.class);
         intent.putExtra("mode", mode);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling addGeofence()
-        Log.i("Geofencing", "Intentservice started");
-        //mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        //Log.i("Geofencing", "Service setup " + serviceConnection);
         return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        /*return PendingIntent.getBroadcast(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);*/
     }
 
     @Override

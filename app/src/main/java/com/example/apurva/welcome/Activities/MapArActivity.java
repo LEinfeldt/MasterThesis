@@ -70,6 +70,7 @@ import com.skobbler.ngx.routing.SKRouteSettings;
 
 import org.json.JSONException;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -226,7 +227,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
                     startActivity(intent);
                 }
                 else{
-                    geofencing.removeGeofence();
+                    //geofencing.removeGeofence();
                 }
 
             }
@@ -300,6 +301,11 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
     public void updateImage(){};
     public void setImagecounter(int i) {};
     public int getImagecounter(){return 0;};
+
+    @Override
+    public void deleteGeofence(List ids) {
+        geofencing.removeGeofence(ids);
+    }
 
     /*public void onButtonClicked(View view) {
         //If the central button is clicked while the text reads calculate route
