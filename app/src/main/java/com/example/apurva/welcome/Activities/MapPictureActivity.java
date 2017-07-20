@@ -173,13 +173,7 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
         routeNumber = intent.getIntExtra("Route", 1);
 
         //initialize the logger
-        this.logger = new Logger();
-        try {
-            logger.setupLogging("Map + Picture", this, intent.getIntExtra("Route", 1));
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
+        this.logger = Logger.getInstance("Map + Picture", this, intent.getIntExtra("Route", 1));
 
         // set a listener to the list
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

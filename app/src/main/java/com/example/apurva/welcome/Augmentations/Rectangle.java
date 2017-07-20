@@ -32,8 +32,6 @@ public class Rectangle {
             0.1f, -1f, 0.0f,   // bottom right
             0.1f, .3f, -0f    //top right
     };
-    //0f,  0.9f, 0f,// bottom left
-    //0.2f, 1.3f, 0.0f,   // bottom right
 
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
 

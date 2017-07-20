@@ -127,13 +127,7 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         }
 
         //initialize the logger
-        this.logger = new Logger();
-        try {
-            logger.setupLogging("Map", this, intent.getIntExtra("Route", 1));
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
+        this.logger = Logger.getInstance("Map", this, intent.getIntExtra("Route", 1));
 
         // set a listener to the list
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -175,13 +175,7 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         layerInteraction = new LayerInteraction(this);
 
         //initialize the logger
-        this.logger = new Logger();
-        try {
-            logger.setupLogging("Map + AR", this, intent.getIntExtra("Route", 1));
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
+        this.logger = Logger.getInstance("Map + AR", this, intent.getIntExtra("Route", 1));
 
         // set a listener to the list
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

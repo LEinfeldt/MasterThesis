@@ -14,11 +14,14 @@ import java.text.SimpleDateFormat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.skobbler.ngx.SKCoordinate;
+
+import org.json.JSONException;
 //import de.unimuenster.ifgi.locormandemo.filter.Orientation;
 //import de.unimuenster.ifgi.locormandemo.manipulations.ExperimentProvider;
 
 /**
  * Created by sven on 02.08.16.
+ * Modified to be used as a Singleton
  */
 public class Logger {
 
@@ -39,6 +42,45 @@ public class Logger {
     private SKCoordinate mLastLocation;
 
     Context mContext;
+    private static Logger instance = null;
+
+    /**
+     * Private Constructor to maintain the single instance of the logger
+     * @param experimentID Name of the Experiment
+     * @param context Context of the calling activity
+     * @param route Route of the experiment
+     */
+    private Logger(String experimentID, Context context, int route) {
+        try {
+            setupLogging(experimentID, context, route);
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+        instance = this;
+    }
+
+    /**
+     * Return the only instance of the logger
+     * @param experimentID Name of the experiment
+     * @param context Context of the calling Activity
+     * @param route Route of the experiment
+     * @return Only instance of the logger
+     */
+    public static Logger getInstance(String experimentID, Context context, int route) {
+        if(instance !=  null) {
+            return instance;
+        }
+        else return new Logger(experimentID, context, route);
+    };
+
+    /**
+     * Return the instance of the logger that MUST already been initilized
+     * @return Instance of the logger
+     */
+    public static Logger getInstance() {
+        return instance;
+    }
 
     public void setupLogging(String experimentID, Context context, int route) throws IOException {
 
@@ -151,6 +193,25 @@ public class Logger {
         mWriter.writeNext(data);
         mID++;
     }
+
+    public void logDialog(String decision) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String idString = "" + mID;
+        String geofence = "Dialog decision " + decision;
+        String logTimeStamp = dateFormat.format(System.currentTimeMillis());
+        String lat = "" + mLastLocation.getLatitude();
+        String lng = "" + mLastLocation.getLongitude();
+        String activeLayer = "-";
+        String routeAction = "No. "+ myRoute;
+
+        String[] data = {idString, mExperimentID, geofence, logTimeStamp, lat, lng, activeLayer, routeAction};
+
+        mWriter.writeNext(data);
+        mID++;
+    }
+
 
     public void stopLoggingAndWriteFile() throws IOException {
 
