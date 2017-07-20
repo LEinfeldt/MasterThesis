@@ -28,11 +28,11 @@ public class PermissionsActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED){
             askLocationPermission();
         }
-        else if(ContextCompat.checkSelfPermission(this,
+        if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             askWritePermission();
         }
-        else if(ContextCompat.checkSelfPermission(this,
+        if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             askReadPermission();
         }
@@ -79,10 +79,6 @@ public class PermissionsActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, ModeSelectionActivity.class);
                     startActivity(intent);
                 }
-                else {
-                    finish();
-
-                }
                 return;
             }
             case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:{
@@ -93,10 +89,6 @@ public class PermissionsActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, ModeSelectionActivity.class);
                     startActivity(intent);
                 }
-                else {
-                    finish();
-
-                }
                 return;
             }
             case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:{
@@ -105,10 +97,6 @@ public class PermissionsActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(this, ModeSelectionActivity.class);
                     startActivity(intent);
-                }
-                else {
-                    finish();
-
                 }
                 return;
             }
