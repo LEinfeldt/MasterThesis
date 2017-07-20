@@ -9,7 +9,7 @@ public final class Constants {
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = 12 * 60 * 60 * 1000;
-    public static final float GEOFENCE_RADIUS_IN_METERS = 300;
+    public static final float GEOFENCE_RADIUS_IN_METERS = 100;
     public static final String PACKAGE_NAME =
             "com.example.apurva.welcome.Geocoding";
     public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";

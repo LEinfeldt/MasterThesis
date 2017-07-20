@@ -38,6 +38,7 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     private static final String TAG = "Geofencing";
     private String mode;
     private Intent mIntent;
+    private boolean called = false;
 
     public Geofencing(Context context, int route, String mode) throws JSONException {
         jsonParser = new JsonParser(context);
@@ -123,6 +124,7 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     }
 
     public void removeGeofence(List<String> ids) {
+        Log.i("RemoveGeofence", "Id: " + ids);
         if(mGoogleApiClient.isConnected()) {
             try {
                 LocationServices.GeofencingApi.removeGeofences(
@@ -155,7 +157,12 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     @Override
     public void onConnected(@Nullable Bundle bundle) {
       Toast.makeText(mContext, "Geofence Services Connected", Toast.LENGTH_SHORT).show();
-        addGeofence();
+        Log.i("Geofencing", "called: " + called);
+        if(!called) {
+            addGeofence();
+            called = true;
+        }
+        Log.i("Geofencing", "Added geofences");
     }
 
     @Override

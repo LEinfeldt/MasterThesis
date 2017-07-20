@@ -29,7 +29,7 @@ public class Triangle{
         };
 
         // Set color with red, green, blue and alpha (opacity) values
-        float color[] = { 0f, 0f, 0f, 1f };
+        float color[] = { 1f, 0f, 0f, 1f };
 
         private final int vertexCount = triangleCoords.length / COORDS_PER_VERTEX;
 

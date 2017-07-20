@@ -95,20 +95,25 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 PointOfInterests.presentGeofence = triggeredGeofence;
                 MyGLSurfaceView.currentGeofence = triggeredGeofence;
                 Toast.makeText(this, "Open dialogbox", Toast.LENGTH_SHORT).show();
-                //start the dialog to ask for the camera
-                startActivity(this.intent);
                 ArrayList<String> list = new ArrayList<>();
                 list.add(triggeredGeofence.getRequestId());
+                Log.i("Geofence", "DeleteGeofence");
                 serviceCallbacks.deleteGeofence(list);
+                //start the dialog to ask for the camera
+                startActivity(this.intent);
                 return;
             }
             //else if the event was triggerd by the picture view
             else if(mode.contentEquals("picture")) {
+                Geofence triggeredGeofence = event.getTriggeringGeofences().get(0);
                 Toast.makeText(this, "Confirmationpoint reached", Toast.LENGTH_SHORT).show();
                 //call the method to update the image in the picture view
                 Log.i("Geofence", "In the picture if " + serviceCallbacks);
                 if (serviceCallbacks != null) {
                     Log.i("Called", "The callback");
+                    ArrayList<String> list = new ArrayList<>();
+                    list.add(triggeredGeofence.getRequestId());
+                    serviceCallbacks.deleteGeofence(list);
                     serviceCallbacks.updateImage();
                 }
                 return;

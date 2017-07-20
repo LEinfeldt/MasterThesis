@@ -304,6 +304,8 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
 
     @Override
     public void deleteGeofence(List ids) {
+
+        Log.i("MapAR", "DeleteGeofence");
         geofencing.removeGeofence(ids);
     }
 
