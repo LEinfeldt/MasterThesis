@@ -27,16 +27,18 @@ public class Rectangle {
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
     static float rectangleCoords[] = {   // in counterclockwise order:
-            -0.5f,  2f, -0f,   // top left
-            -0.5f, -2f, 0.0f,   // bottom left
-            0.5f, -2f, 0.0f,   // bottom right
-            0.5f, 2f, -0f    //top right
+            -0.1f,  .3f, -0f,   // top left
+            -0.1f, -1f, 0.0f,   // bottom left
+            0.1f, -1f, 0.0f,   // bottom right
+            0.1f, .3f, -0f    //top right
     };
+    //0f,  0.9f, 0f,// bottom left
+    //0.2f, 1.3f, 0.0f,   // bottom right
 
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 0.15f, 0.15f, 0.15f, 0.4f };
+    float color[] = { 1f, 0f, 0f, 1f };
 
     private final int vertexCount = rectangleCoords.length / COORDS_PER_VERTEX;
 

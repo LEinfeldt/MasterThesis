@@ -77,8 +77,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer{
         Matrix.rotateM(mMVPMatrix, 0, dx, 0f, 1f, 0f);
         //call to draw the rectangle and three triangles
         rectangle.draw(mMVPMatrix);
-        triangle.draw(iMVPMatrix);
-        triangle.draw(cMVPMatrix);
+        //triangle.draw(iMVPMatrix);
+        //triangle.draw(cMVPMatrix);
         triangle.draw(dMVPMatrix);
     }
 }
