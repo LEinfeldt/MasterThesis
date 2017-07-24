@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
+import android.util.Log;
 
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
@@ -87,7 +88,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements SensorUpdate.Accel
         //calculates the angle by which the augmentation must be rotated according to the bearing of the direction
         if (flag) {
             MyGLRenderer.dx = (float)(Math.toDegrees(aCal.deviceBearing(accelValue, compassValue)[0]) -
-                    aCal.calculateBearing(testLocation));//TODO: Replace testLocation by getDirCoordinate().
+                    aCal.calculateBearing(getDirCoordinate()));//TODO: Replace testLocation by getDirCoordinate().
             flag = false;
             //onDraw in Renderer is called when this is called
             requestRender();
@@ -95,17 +96,17 @@ public class MyGLSurfaceView extends GLSurfaceView implements SensorUpdate.Accel
 
     }
 
+    /**
+     * Get the coordiantes of the next geofence that is on the route
+     * @return Laction object with latitude and longitude values of the next geofence
+     */
     private Location getDirCoordinate(){
         Location dirLocation = new Location("manual");
 
-        for (Map.Entry<String, LatLng> entry : jsonParser.getDirectionCoordinates().entrySet()) {
-            if(entry.getKey().equals(currentGeofence.getRequestId())){
+        for (Map.Entry<String, LatLng> entry : jsonParser.getNextDecisionpoint(currentGeofence.getRequestId()).entrySet()) {
                 dirLocation.setLatitude(entry.getValue().latitude);
                 dirLocation.setLongitude(entry.getValue().longitude);
-
-            }
         }
-
         return dirLocation;
     }
 

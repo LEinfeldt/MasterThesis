@@ -17,6 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by apurv on 12-04-2017.
@@ -33,6 +35,8 @@ public class JsonParser {
     private byte[] route3ARBuffer;
     private byte[] route4ARBuffer;
     private byte[] route5ARBuffer;
+
+    private int route;
 
     private byte[] mapBuffer;
 
@@ -298,7 +302,8 @@ public class JsonParser {
      * @return Hashmap of all the DPs
      */
     public HashMap<String, LatLng> getDecisionpoints(int route) {
-        HashMap<String, LatLng> latlnglist = new HashMap<>();
+        this.route = route;
+        HashMap<String, LatLng> latlnglist = new LinkedHashMap<>();
         JSONObject mJsonObject;
         try {
             //select the route
@@ -323,7 +328,6 @@ public class JsonParser {
                 Log.i("JSONPARSER", "Value of i: " + i);
                 JSONObject jsonInside = mJsonArray.getJSONObject(i);
                 Log.i("JSONPARSER", "Value of mJsonArray: " + jsonInside);
-                Log.i("JSONPARSER", "Value of name: " + jsonInside.getString("type"));
                 JSONObject current = jsonInside.getJSONObject("geometry");
                 //decision points and confirmation points
                 JSONArray coords = current.getJSONArray("coordinates");
@@ -341,52 +345,27 @@ public class JsonParser {
     }
 
     /**
-     * Get all confirmation points on a selected route
-     * @param route The route to be used
-     * @return Hashmap of all CPs
+     * Return the next decision point from the current one.
+     * @param current Decision Point, that is active at the moment
+     * @return Next geofence on the route. Or null if no more geofences are available
      */
-    public HashMap<String, SKCoordinate> getConfirmationpoints(int route) {
-        HashMap<String, SKCoordinate> latlnglist = new HashMap<>();
-        JSONObject mJsonObject;
-        try {
-            //select the route
-            switch(route) {
-                case 1: mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
-                    break;
-                case 2: mJsonObject = new JSONObject(loadJSONFromAsset(route2Buffer));
-                    break;
-                case 3: mJsonObject = new JSONObject(loadJSONFromAsset(route3Buffer));
-                    break;
-                case 4: mJsonObject = new JSONObject(loadJSONFromAsset(route4Buffer));
-                    break;
-                case 5: mJsonObject = new JSONObject(loadJSONFromAsset(route5Buffer));
-                    break;
-                default: mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
+    public HashMap<String, LatLng> getNextDecisionpoint(String current) {
+        HashMap<String, LatLng> nextDP = new HashMap<>();
+        boolean next = false;
+        for(Map.Entry<String, LatLng> entry : getDecisionpoints(route).entrySet()) {
+            Log.i("Geofencing", "CURRENT: " + entry);
+            if(next) {
+                nextDP.put(entry.getKey(), entry.getValue());
+                return nextDP;
             }
-            JSONArray mJsonArray = mJsonObject.getJSONArray("features");
+            if(entry.getKey().contentEquals(current)) {
+                next = true;
+                Log.i("Geofencing", "CURRENT: " + entry);
 
-            //get all the data from the json file
-            for(int i = 1; i < mJsonArray.length(); i++) {
-                JSONObject jsonInside = mJsonArray.getJSONObject(i);
-                JSONObject current = jsonInside.getJSONObject("geometry");
-                //get the confirmation points (with properties)
-                if(jsonInside.getJSONObject("properties").has("marker-color")) {
-                    //do something with confirmation point
-                    JSONArray coords = current.getJSONArray("coordinates");
-                    double latitude = coords.getDouble(1);
-                    double longitude = coords.getDouble(0);
-                    SKCoordinate location = new SKCoordinate(latitude, longitude);
-                    latlnglist.put("" + i, location);
-                }
             }
         }
-        catch(JSONException e) {
-            throw new RuntimeException(e);
-        }
-        return latlnglist;
-
+        return null;
     }
-
     /**
      * Get a hashmap with all coordinates of the busstops in the json
      * @return Hashmap with the values and the names
