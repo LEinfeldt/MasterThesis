@@ -209,6 +209,18 @@
           51.95230623740452
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "name": "End",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.600328922271728,
+          51.95321212244169
+        ]
+      }
     }
   ]
 }

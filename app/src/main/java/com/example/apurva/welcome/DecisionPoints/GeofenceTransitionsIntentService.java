@@ -10,13 +10,13 @@ import android.widget.Toast;
 import com.example.apurva.welcome.Activities.DialogActivity;
 import com.example.apurva.welcome.Augmentations.MyGLSurfaceView;
 import com.example.apurva.welcome.Augmentations.PointOfInterests;
+import com.example.apurva.welcome.Logger.Logger;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 import com.skobbler.ngx.SKCoordinate;
 
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Stack;
 
 /**
  * Created by apurv on 22-04-2017
@@ -32,12 +32,14 @@ public class GeofenceTransitionsIntentService extends IntentService {
     private String mode;
     private boolean called = false;
 
+    private Logger logger;
     private ServiceCallbacks serviceCallbacks;
     private final IBinder binder = new LocalBinder();
 
     public GeofenceTransitionsIntentService() {
 
         super(TAG);  // use TAG to name the IntentService worker thread
+        logger = Logger.getInstance();
     }
 
     // Class used for the client Binder.
@@ -82,12 +84,40 @@ public class GeofenceTransitionsIntentService extends IntentService {
         //if the user enters into a geofence
         if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
             Log.i("Geoservice", "Enter");
-            serviceCallbacks.logGeofence("Entered " + event.getTriggeringGeofences().get(0).getRequestId(),
-                    new SKCoordinate(
-                            event.getTriggeringLocation().getLatitude(),
-                            event.getTriggeringLocation().getLongitude()
-                    ));
-            Log.i("Geofence", "Entered geofence: " + event.getTriggeringGeofences().get(0).getRequestId());
+            String id = event.getTriggeringGeofences().get(0).getRequestId();
+            //if a regular geofence was entered log the entering event
+            if(!id.contentEquals("End")) {
+                logger.logGeofence("Entered " + id,
+                        new SKCoordinate(
+                                event.getTriggeringLocation().getLatitude(),
+                                event.getTriggeringLocation().getLongitude()
+                        ));
+                Log.i("Geofence", "Entered geofence: " + id);
+            }
+
+            /*if the entered geofence is the last one on the route (marked with the name "End")
+            * the geofence will trigger the end of the experiment and stop logging data.
+            */
+            else if(id.contentEquals("End")) {
+                logger.logGeofence("Reached " + id,
+                        new SKCoordinate(
+                                event.getTriggeringLocation().getLatitude(),
+                                event.getTriggeringLocation().getLongitude()
+                        ));
+                try {
+                    logger.stopLoggingAndWriteFile();
+                }
+                catch(IOException e) {
+                    e.printStackTrace();
+                }
+                //delete the geofence from the list, to prevent further triggering
+                Geofence triggeredGeofence = event.getTriggeringGeofences().get(0);
+                ArrayList<String> list = new ArrayList<>();
+                list.add(triggeredGeofence.getRequestId());
+                Log.i("Geofence", "DeleteGeofence");
+                serviceCallbacks.deleteGeofence(list);
+                return;
+            }
 
             //if the event was triggered by the ar view
             if(mode.contentEquals("AR")) {
@@ -123,7 +153,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             Toast.makeText(this, "Navigation Resumed", Toast.LENGTH_SHORT).show();
             //log the event leaving and the coordinates
-            serviceCallbacks.logGeofence("Left "+ event.getTriggeringGeofences().get(0).getRequestId(), new SKCoordinate(
+            logger.logGeofence("Left "+ event.getTriggeringGeofences().get(0).getRequestId(), new SKCoordinate(
                     event.getTriggeringLocation().getLatitude(),
                     event.getTriggeringLocation().getLongitude()
             ));

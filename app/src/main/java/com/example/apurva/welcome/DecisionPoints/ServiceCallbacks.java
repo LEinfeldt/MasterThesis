@@ -11,7 +11,6 @@ import java.util.List;
 public interface ServiceCallbacks {
 
     void deleteGeofence(List ids);
-    void logGeofence(String geofence, SKCoordinate pos);
     void setImagecounter(int number);
     int getImagecounter();
     void updateImage();

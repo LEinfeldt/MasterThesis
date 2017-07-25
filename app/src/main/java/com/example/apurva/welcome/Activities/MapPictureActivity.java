@@ -30,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.apurva.welcome.DecisionPoints.GeofenceReceiver;
 import com.example.apurva.welcome.DecisionPoints.GeofenceTransitionsIntentService;
 import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
@@ -441,12 +440,6 @@ public class MapPictureActivity extends AppCompatActivity implements SKMapSurfac
                 }
             }
         }
-    }
-
-    @Override
-    public void logGeofence(String geofence, SKCoordinate pos) {
-        Log.i("LogGeofence", "In der Activity, method called");
-        logger.logGeofence(geofence, pos);
     }
 
     @Override

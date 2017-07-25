@@ -386,16 +386,6 @@ public class MapArActivity extends AppCompatActivity implements SKMapSurfaceList
         }
     }
 
-    /**
-     * Log a geofence event
-     * @param geofence geofence event that was triggered
-     * @param pos Position of the user at triggering time
-     */
-    @Override
-    public void logGeofence(String geofence, SKCoordinate pos) {
-        logger.logGeofence(geofence, pos);
-    }
-
     @Override
     public void onBackPressed() {
         //double click to exit the application

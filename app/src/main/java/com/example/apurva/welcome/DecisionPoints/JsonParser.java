@@ -335,6 +335,9 @@ public class JsonParser {
                 double longitude = coords.getDouble(0);
                 LatLng location = new LatLng(latitude, longitude);
                 latlnglist.put(jsonInside.getString("name"), location);
+                Log.i("JSONPARSER", "Location: " + location);
+                Log.i("JSONPARSER", "Name: " + jsonInside.getString("name"));
+
             }
         }
         catch(JSONException e) {

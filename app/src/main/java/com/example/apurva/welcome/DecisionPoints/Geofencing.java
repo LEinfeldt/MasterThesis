@@ -79,7 +79,7 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     public void populateGeofenceList(int route) {
         //change back to getDPCoordiantes for testing why it crashed
         Log.i("Geofence", "Populated geofence list");
-        for (Map.Entry<String, LatLng> entry : jsonParser.getDPCoordinates().entrySet()) {
+        for (Map.Entry<String, LatLng> entry : jsonParser.getDecisionpoints(route).entrySet()) {
             mGeofenceList.add(new Geofence.Builder()
                     .setRequestId(entry.getKey())
                     .setCircularRegion(
