@@ -1,6 +1,7 @@
 package com.example.apurva.welcome.DecisionPoints;
 
 import android.content.Context;
+import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -325,9 +326,7 @@ public class JsonParser {
 
             //get all the data from the json file (0 would be the polyline --> so start at 1)
             for(int i = 1; i < mJsonArray.length(); i++) {
-                Log.i("JSONPARSER", "Value of i: " + i);
                 JSONObject jsonInside = mJsonArray.getJSONObject(i);
-                Log.i("JSONPARSER", "Value of mJsonArray: " + jsonInside);
                 JSONObject current = jsonInside.getJSONObject("geometry");
                 //decision points and confirmation points
                 JSONArray coords = current.getJSONArray("coordinates");
@@ -335,9 +334,6 @@ public class JsonParser {
                 double longitude = coords.getDouble(0);
                 LatLng location = new LatLng(latitude, longitude);
                 latlnglist.put(jsonInside.getString("name"), location);
-                Log.i("JSONPARSER", "Location: " + location);
-                Log.i("JSONPARSER", "Name: " + jsonInside.getString("name"));
-
             }
         }
         catch(JSONException e) {
@@ -345,6 +341,52 @@ public class JsonParser {
         }
         return latlnglist;
 
+    }
+
+    /**
+     * Method determines all AR points that are specified for a route and puts them into a Hashmap
+     * @return Hashmap with all AR elements of the route.
+     */
+    public HashMap<String, LatLng> getARElements() {
+        HashMap<String, LatLng> arElements =  new HashMap<>();
+        JSONObject mJsonObject;
+
+        try {
+            //get the correct route json
+            switch (this.route) {
+                case 1:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route1ARBuffer));
+                    break;
+                case 2:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route2ARBuffer));
+                    break;
+                case 3:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route3ARBuffer));
+                    break;
+                case 4:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route4ARBuffer));
+                    break;
+                case 5:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route5ARBuffer));
+                    break;
+                default: mJsonObject = new JSONObject(loadJSONFromAsset(route1ARBuffer));
+            }
+            JSONArray mJsonArray = mJsonObject.getJSONArray("features");
+
+            //go through all AR elements and get them into a hashmap
+            for(int i = 0; i < mJsonArray.length(); i++) {
+                JSONObject inside = mJsonArray.getJSONObject(i);
+                String name =  inside.getJSONObject("properties").getString("name") + i;
+                double lat = inside.getJSONObject("geometry").getJSONArray("coordinates").getDouble(1);
+                double lng =  inside.getJSONObject("geometry").getJSONArray("coordinates").getDouble(0);
+
+                arElements.put(name, new LatLng(lat, lng));
+            }
+            return arElements;
+        }
+        catch(JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -356,19 +398,17 @@ public class JsonParser {
         HashMap<String, LatLng> nextDP = new HashMap<>();
         boolean next = false;
         for(Map.Entry<String, LatLng> entry : getDecisionpoints(route).entrySet()) {
-            Log.i("Geofencing", "CURRENT: " + entry);
             if(next) {
                 nextDP.put(entry.getKey(), entry.getValue());
                 return nextDP;
             }
             if(entry.getKey().contentEquals(current)) {
                 next = true;
-                Log.i("Geofencing", "CURRENT: " + entry);
-
             }
         }
         return null;
     }
+
     /**
      * Get a hashmap with all coordinates of the busstops in the json
      * @return Hashmap with the values and the names

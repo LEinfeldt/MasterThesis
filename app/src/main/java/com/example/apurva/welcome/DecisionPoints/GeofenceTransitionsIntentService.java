@@ -63,13 +63,10 @@ public class GeofenceTransitionsIntentService extends IntentService {
         if(called) return;
         serviceCallbacks = callbacks;
         called = true;
-        Log.i("Setcallbacks", "Updated");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
-        Log.i("Geofence", "event reiceived");
 
         this.intent = new Intent(this, DialogActivity.class);
         this.intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -83,7 +80,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
         int geofenceTransition = event.getGeofenceTransition();
         //if the user enters into a geofence
         if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
-            Log.i("Geoservice", "Enter");
             String id = event.getTriggeringGeofences().get(0).getRequestId();
             //if a regular geofence was entered log the entering event
             if(!id.contentEquals("End")) {
@@ -114,7 +110,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 Geofence triggeredGeofence = event.getTriggeringGeofences().get(0);
                 ArrayList<String> list = new ArrayList<>();
                 list.add(triggeredGeofence.getRequestId());
-                Log.i("Geofence", "DeleteGeofence");
                 serviceCallbacks.deleteGeofence(list);
                 return;
             }
@@ -127,7 +122,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 Toast.makeText(this, "Open dialogbox", Toast.LENGTH_SHORT).show();
                 ArrayList<String> list = new ArrayList<>();
                 list.add(triggeredGeofence.getRequestId());
-                Log.i("Geofence", "DeleteGeofence");
                 serviceCallbacks.deleteGeofence(list);
                 //start the dialog to ask for the camera
                 startActivity(this.intent);
@@ -138,7 +132,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 Geofence triggeredGeofence = event.getTriggeringGeofences().get(0);
                 Toast.makeText(this, "Confirmationpoint reached", Toast.LENGTH_SHORT).show();
                 //call the method to update the image in the picture view
-                Log.i("Geofence", "In the picture if " + serviceCallbacks);
                 if (serviceCallbacks != null) {
                     Log.i("Called", "The callback");
                     ArrayList<String> list = new ArrayList<>();

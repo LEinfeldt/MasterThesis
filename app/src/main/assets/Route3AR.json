@@ -7,7 +7,7 @@
         "marker-color": "#008000",
         "marker-size": "medium",
         "marker-symbol": "",
-        "NAME": "Pharmacy"
+        "name": "Pharmacy"
       },
       "geometry": {
         "type": "Point",
@@ -23,7 +23,7 @@
         "marker-color": "#008000",
         "marker-size": "medium",
         "marker-symbol": "",
-        "NAME": "Pharmacy"
+        "name": "Pharmacy"
       },
       "geometry": {
         "type": "Point",
@@ -39,7 +39,7 @@
         "marker-color": "#008000",
         "marker-size": "medium",
         "marker-symbol": "",
-        "NAME": "Deutsche Postbank"
+        "name": "Deutsche Postbank"
       },
       "geometry": {
         "type": "Point",
@@ -55,7 +55,7 @@
         "marker-color": "#7e7e7e",
         "marker-size": "medium",
         "marker-symbol": "",
-        "NAME": "Sparkasse Münsterland Ost"
+        "name": "Sparkasse Münsterland Ost"
       },
       "geometry": {
         "type": "Point",
@@ -71,7 +71,7 @@
         "marker-color": "#008000",
         "marker-size": "medium",
         "marker-symbol": "",
-        "NAME": "LIDL"
+        "name": "LIDL"
       },
       "geometry": {
         "type": "Point",

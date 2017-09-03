@@ -220,7 +220,8 @@ public class Logger {
 
         // trigger indexing of files (needed for some devices to appear on the sdcard)
         Uri contentUri = Uri.fromFile(mFile);
-        Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE"); mediaScanIntent.setData(contentUri);
+        Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
+        mediaScanIntent.setData(contentUri);
         mContext.sendBroadcast(mediaScanIntent);
 
     }

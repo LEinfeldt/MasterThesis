@@ -7,7 +7,7 @@
         "marker-color": "#008000",
         "marker-size": "medium",
         "marker-symbol": "",
-        "NAME": "Pharmacy"
+        "name": "Pharmacy"
       },
       "geometry": {
         "type": "Point",
@@ -23,7 +23,7 @@
         "marker-color": "#008000",
         "marker-size": "medium",
         "marker-symbol": "",
-        "NAME ": "Park"
+        "name ": "Park"
       },
       "geometry": {
         "type": "Point",

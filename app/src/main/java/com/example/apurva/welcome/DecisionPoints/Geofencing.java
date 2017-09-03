@@ -127,7 +127,6 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     }
 
     public void removeGeofence(List<String> ids) {
-        Log.i("RemoveGeofence", "Id: " + ids);
         if(mGoogleApiClient.isConnected()) {
             try {
                 LocationServices.GeofencingApi.removeGeofences(

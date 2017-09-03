@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.location.Location;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,6 +49,8 @@ public class PointOfInterests extends View implements SensorUpdate.AccelMagnoLis
     private Resources res = getResources();
     //TODO: Create more bitmaps for more POIs
     private Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.lumaqq);
+    private Bitmap marktkauf = BitmapFactory.decodeResource(res, R.drawable.marktkauf);
+    private Bitmap apotheke  = BitmapFactory.decodeResource(res, R.drawable.apotheke);
     private AugmentCalculation augmentCalculation;
     //Triggered Geofence
     //TODO:Create one instance for the triggered geofence to be accessed by all classes
@@ -107,8 +111,11 @@ public class PointOfInterests extends View implements SensorUpdate.AccelMagnoLis
         //to draw a point of interest
         canvas.drawBitmap(bitmap, w/2, h/4, contentPaint);
         //to draw another point of interest
-        //canvas.drawBitmap(bitmap2,(w/2)+x, h/2,contentPaint);
-        //TODO: make cases for each augmentation Ana wants to have on the view
+        /*TODO scale the icons of the places down to 32x32 pixels
+        * and add more augmentations here. The places where the icons appear in the augmentations need to be calculated
+        * separately by augmentCalculation.calculateBearing()
+        */
+        canvas.drawBitmap(marktkauf,(w/2) + x, h/2,contentPaint);
     }
 
 
@@ -125,7 +132,7 @@ public class PointOfInterests extends View implements SensorUpdate.AccelMagnoLis
     public void onMagnoSensorChanged(float[] compassValue) {
         if (flag) {
             double difference = Math.toDegrees(augmentCalculation.deviceBearing(accelValue, compassValue)[0]) -
-                    augmentCalculation.calculateBearing(testLocation);//TODO: replace testlocation by getFirstPOI().
+                    augmentCalculation.calculateBearing(getFirstPOI());//TODO: replace testlocation by getFirstPOI().
             dx = (float) (w/AugmentCalculation.horizontalFOV() * difference);
             dy = (float) (h / AugmentCalculation.verticalFOV() * (Math.toDegrees(augmentCalculation.deviceBearing(accelValue, compassValue)[1])));
             dr = (float) (0.0f - Math.toDegrees(augmentCalculation.deviceBearing(accelValue, compassValue)[2]));
@@ -135,7 +142,7 @@ public class PointOfInterests extends View implements SensorUpdate.AccelMagnoLis
         }
     }
 
-
+    //TODO Impement method to get the POI cooridinates for the point that is required at the certain geofence
     private Location getFirstPOI(){
         Location pOILocation = new Location("manual");
 
@@ -164,8 +171,8 @@ public class PointOfInterests extends View implements SensorUpdate.AccelMagnoLis
 
     private final static Location testLocation = new Location("manual");
     static{
-        testLocation.setLatitude(23.176643);
-        testLocation.setLongitude(77.478657);
+        testLocation.setLatitude(7.0);
+        testLocation.setLongitude(51.993);
     }
 
 }
