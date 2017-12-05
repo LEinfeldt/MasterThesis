@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
+import com.example.apurva.welcome.DecisionPoints.Geofencing;
 import com.example.apurva.welcome.DecisionPoints.JsonParser;
 import com.example.apurva.welcome.DeviceUtils.SensorUpdate;
 import com.example.apurva.welcome.Geocoding.Constants;
@@ -108,13 +109,23 @@ public class PointOfInterests extends View implements SensorUpdate.AccelMagnoLis
         canvas.rotate(dr);
         canvas.translate(0.0f, 0.0f-dy);
         canvas.translate(0.0f-dx, 0.0f);
-        //to draw a point of interest
-        canvas.drawBitmap(bitmap, w/2, h/4, contentPaint);
+        //to draw a point of interest use this method with the parameter of the defined image (bitmap)
+        //canvas.drawBitmap(bitmap, w/2, h/4, contentPaint);
         //to draw another point of interest
-        /*TODO scale the icons of the places down to 32x32 pixels
-        * and add more augmentations here. The places where the icons appear in the augmentations need to be calculated
-        * separately by augmentCalculation.calculateBearing()
-        */
+        //TODO scale the icons of the places down to 32x32 pixels (the size of the lumaqq image) so they don't appear as that large
+        //might be ok if they are a little bigger as well --> test that
+
+        //check with switch case or if statements for the currently selected route and the decision point, that was triggered
+        // --> like the followig
+        if(MyGLSurfaceView.currentGeofence.getRequestId().equals("Decision1") && Geofencing.route == 1) {
+            canvas.drawBitmap(marktkauf, w/2, h/2, contentPaint);
+        }
+        //insert cases for each augmentation logo that is supposed to be displayed
+        else if(MyGLSurfaceView.currentGeofence.getRequestId().equals("Decision2") && Geofencing.route == 1) {
+            canvas.drawBitmap(apotheke, w/2, h/2, contentPaint);
+        }
+        //.....
+        //draw the selected bitmaps in the case, delete this line
         canvas.drawBitmap(marktkauf,(w/2) + x, h/2,contentPaint);
     }
 
@@ -132,7 +143,7 @@ public class PointOfInterests extends View implements SensorUpdate.AccelMagnoLis
     public void onMagnoSensorChanged(float[] compassValue) {
         if (flag) {
             double difference = Math.toDegrees(augmentCalculation.deviceBearing(accelValue, compassValue)[0]) -
-                    augmentCalculation.calculateBearing(getFirstPOI());//TODO: replace testlocation by getFirstPOI().
+                    augmentCalculation.calculateBearing(getAugmentation(presentGeofence.getRequestId()));
             dx = (float) (w/AugmentCalculation.horizontalFOV() * difference);
             dy = (float) (h / AugmentCalculation.verticalFOV() * (Math.toDegrees(augmentCalculation.deviceBearing(accelValue, compassValue)[1])));
             dr = (float) (0.0f - Math.toDegrees(augmentCalculation.deviceBearing(accelValue, compassValue)[2]));
@@ -142,37 +153,19 @@ public class PointOfInterests extends View implements SensorUpdate.AccelMagnoLis
         }
     }
 
-    //TODO Impement method to get the POI cooridinates for the point that is required at the certain geofence
-    private Location getFirstPOI(){
-        Location pOILocation = new Location("manual");
 
-        for (Map.Entry<String, LatLng> entry : jsonParser.getPOI1Coordinates().entrySet()) {
-            if(entry.getKey().equals(presentGeofence.getRequestId())){
-                pOILocation.setLatitude(entry.getValue().latitude);
-                pOILocation.setLongitude(entry.getValue().longitude);
-            }
+    /**
+     * Get the coordinates of an augmentation that shall be displayed in the camera view
+     * @param requestID ID of the decisionpoit on the route
+     * @return Coordinates of the Location
+     */
+    private Location getAugmentation(String requestID) {
+        Location augmentationLocation = new Location("manual");
+
+        for(Map.Entry<String, LatLng> entry: jsonParser.getAugmentations(requestID).entrySet()) {
+            augmentationLocation.setLatitude(entry.getValue().latitude);
+            augmentationLocation.setLongitude(entry.getValue().longitude);
         }
-
-        return pOILocation;
+        return augmentationLocation;
     }
-
-    private Location getSecondPOI() {
-        Location pOILocation = new Location("manual");
-
-        for (Map.Entry<String, LatLng> entry : jsonParser.getPOI2Coordinates().entrySet()) {
-            if (entry.getKey().equals(presentGeofence.getRequestId())) {
-                pOILocation.setLatitude(entry.getValue().latitude);
-                pOILocation.setLongitude(entry.getValue().longitude);
-            }
-        }
-
-        return pOILocation;
-    }
-
-    private final static Location testLocation = new Location("manual");
-    static{
-        testLocation.setLatitude(7.0);
-        testLocation.setLongitude(51.993);
-    }
-
 }

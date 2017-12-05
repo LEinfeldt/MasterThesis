@@ -209,6 +209,55 @@ public class JsonParser {
         return latlnglist;
     }
 
+    /**
+     * Get the augmentation of a defined decision point
+     * @param requestID The id of the current decision point, that the augmentation is requested for
+     * @return Hashmap of the name of the augmentation and the location.
+     */
+    public HashMap<String, LatLng> getAugmentations(String requestID) {
+        HashMap<String, LatLng> location = new HashMap<>();
+
+        JSONObject mJsonObject;
+        try {
+            //select the route
+            switch (route) {
+                case 1:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
+                    break;
+                case 2:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route2Buffer));
+                    break;
+                case 3:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route3Buffer));
+                    break;
+                case 4:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route4Buffer));
+                    break;
+                case 5:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route5Buffer));
+                    break;
+                default:
+                    mJsonObject = new JSONObject(loadJSONFromAsset(route1Buffer));
+            }
+            JSONArray mJsonArray =  mJsonObject.getJSONArray("features");
+
+            // get the coordinates of the augmentation, that is saved with the decisionpoint that is given in "requestID"
+            for(int i = 1; i < mJsonArray.length(); i++) {
+                if(mJsonArray.getJSONObject(i).get("name").equals(requestID)) {
+                    JSONObject jsonInside = mJsonArray.getJSONObject(i).getJSONObject("augmentation");
+                    JSONArray coords =  jsonInside.getJSONArray("coordinates");
+                    location.put(jsonInside.getString("name"), new LatLng(coords.getDouble(1), coords.getDouble(0)));
+                }
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        return location;
+    }
+
     public HashMap<String, LatLng> getPOI1Coordinates() {
         HashMap<String,LatLng> latlnglist = new HashMap<>();
         try {

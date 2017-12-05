@@ -42,6 +42,7 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     private String mode;
     private Intent mIntent;
     private boolean called = false;
+    public static int route;
 
     public Geofencing(Context context, int route, String mode) throws JSONException {
         jsonParser = new JsonParser(context);
@@ -53,6 +54,7 @@ public class Geofencing implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 
         //get the mode of the context
         this.mode = mode;
+        this.route = route;
 
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient(context);

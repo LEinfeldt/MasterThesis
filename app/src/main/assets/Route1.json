@@ -146,6 +146,14 @@
       "type": "Feature",
       "properties": {},
       "name": "Decision1",
+      "augmentation": {
+        "name": "Marktkauf",
+        "type": "Point",
+        "coordinates":[
+          7.571007013320923,
+          51.958091684683154  
+        ]
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [

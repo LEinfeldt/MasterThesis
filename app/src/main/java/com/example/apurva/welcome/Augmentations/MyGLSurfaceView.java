@@ -98,7 +98,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements SensorUpdate.Accel
 
     /**
      * Get the coordiantes of the next geofence that is on the route
-     * @return Laction object with latitude and longitude values of the next geofence
+     * @return Location object with latitude and longitude values of the next geofence
      */
     private Location getDirCoordinate(){
         Location dirLocation = new Location("manual");
